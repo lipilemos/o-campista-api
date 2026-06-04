@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>o_campista.repository.imp</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\o-campista.entities\o-campista.entities.csproj" />
+    <ProjectReference Include="..\o-campista.repository\o-campista.repository.csproj" />
+  </ItemGroup>
+
+  <Target Name="UnblockOutput" AfterTargets="Build">
+    <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -Command &quot;if (Test-Path '$(TargetDir)$(TargetFileName)') { Unblock-File -Path '$(TargetDir)$(TargetFileName)' }&quot;" />
+  </Target>
+
+</Project>

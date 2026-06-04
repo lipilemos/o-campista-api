@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using o_campista.api.Context;
-using o_campista.api.Entidades;
+using o_campista.api.Models.Requests;
 using o_campista.api.Models.Responses;
 using o_campista.api.Services;
-using Microsoft.EntityFrameworkCore;
-using o_campista.api.Models.Requests;
+using o_campista.entities.Entities;
 
 namespace o_campista.api.Controllers;
 

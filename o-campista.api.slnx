@@ -1,3 +1,10 @@
 <Solution>
   <Project Path="o-campista.api/o-campista.api.csproj" />
+  <Project Path="o-campista.business.imp/o-campista.business.imp.csproj" Id="6db387b3-0860-4f9b-93e9-b49284fbbf1e" />
+  <Project Path="o-campista.business/o-campista.business.csproj" Id="3833c7bc-7e88-42ee-962b-4d120beb72d5" />
+  <Project Path="o-campista.entities/o-campista.entities.csproj" Id="efb38a2f-702a-4eca-86ec-c3cefc349f59" />
+  <Project Path="o-campista.repository.imp/o-campista.repository.imp.csproj" Id="33dfb2af-db66-49e4-ae8c-643595b6ad47" />
+  <Project Path="o-campista.repository/o-campista.repository.csproj" Id="35cc87d1-9c07-421f-9a31-0fb5c9c58e71" />
+  <Project Path="o-campista.scripts/o-campista.scripts.csproj" Id="b08e2c29-c6de-4474-b385-faf98215c573" />
+  <Project Path="o-campista.shared/o-campista.shared.csproj" Id="c92e8e1d-5777-4d75-a7a2-cc53aaacdd94" />
 </Solution>

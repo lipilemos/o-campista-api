@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using o_campista.api.Context;
 using o_campista.api.Services;
+using o_campista.repository.imp.Repositories;
+using o_campista.repository.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,12 +16,14 @@ builder.Services.AddDbContext<CampistaDbContext>(
 );
 
 builder.Services.AddControllers();
-
 builder.Services.AddEndpointsApiExplorer();
-
 builder.Services.AddSwaggerGen();
 
+//services
 builder.Services.AddScoped<IMapaService, MapaService>();
+
+//repositories
+builder.Services.AddScoped<ICampingRepository, CampingRepository>();
 
 builder.Services.AddCors(options =>
 {
@@ -44,11 +48,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseCors("AngularPolicy");
-
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();
