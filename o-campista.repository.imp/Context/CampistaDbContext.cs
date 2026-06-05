@@ -19,6 +19,19 @@ namespace o_campista.api.Context
                     x.CampingId,
                     x.RecursoId
                 });
+            modelBuilder.Entity<UsuarioConquista>()
+                .HasKey(x => new
+                {
+                    x.UsuarioId,
+                    x.ConquistaId
+                });
+
+            modelBuilder.Entity<UsuarioPresente>()
+                .HasKey(x => new
+                {
+                    x.UsuarioId,
+                    x.PresenteId
+                });
 
             base.OnModelCreating(modelBuilder);
         }
@@ -29,5 +42,9 @@ namespace o_campista.api.Context
         public DbSet<Recurso> Recursos { get; set; }
         public DbSet<Trilha> Trilhas { get; set; }
         public DbSet<TrilhaPonto> TrilhaPontos { get; set; }
+        public DbSet<Conquista> Conquistas { get; set; }
+        public DbSet<Presente> Presentes { get; set; }
+        public DbSet<UsuarioConquista> UsuarioConquistas { get; set; }
+        public DbSet<UsuarioPresente> UsuarioPresentes { get; set; }
     }
 }

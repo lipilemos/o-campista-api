@@ -1,7 +1,8 @@
-﻿using o_campista.api.Models.Responses;
+﻿using o_campista.business.IServices;
 using o_campista.repository.Repositories;
+using o_campista.shared.Models.Responses;
 
-namespace o_campista.api.Services;
+namespace o_campista.business.imp.Services;
 
 public class MapaService : IMapaService
 {
