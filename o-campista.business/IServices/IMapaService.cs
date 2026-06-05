@@ -1,10 +1,9 @@
 ﻿
-using o_campista.api.Models.Responses;
+using o_campista.shared.Models.Responses;
 
-namespace o_campista.api.Services
+namespace o_campista.business.IServices;
+
+public interface IMapaService
 {
-    public interface IMapaService
-    {
-        Task<IEnumerable<CampingMapaResponse>> ObterCampingsMapaAsync();
-    }
+    Task<IEnumerable<CampingMapaResponse>> ObterCampingsMapaAsync();
 }

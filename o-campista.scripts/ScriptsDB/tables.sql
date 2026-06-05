@@ -139,3 +139,30 @@ create table tb_usuario_conquista (
         foreign key (conquista_id)
         references tb_conquista(id)
 );
+
+create table tb_presente
+(
+    id bigint generated always as identity primary key,
+    nome varchar(200) not null,
+    descricao text,
+    codigo_resgate varchar(100)
+);
+
+create table tb_usuario_presente
+(
+    usuario_id uuid not null,
+    presente_id bigint not null,
+    utilizado boolean not null default false,
+    criado_em timestamp not null default current_timestamp,
+    primary key
+    (
+        usuario_id,
+        presente_id
+    ),
+    constraint fk_usuario_presente_usuario
+        foreign key (usuario_id)
+        references tb_usuario(id),
+    constraint fk_usuario_presente_presente
+        foreign key (presente_id)
+        references tb_presente(id)
+);

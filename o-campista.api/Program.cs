@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using o_campista.api.Context;
-using o_campista.api.Services;
+using o_campista.business.imp.Services;
+using o_campista.business.IServices;
 using o_campista.repository.imp.Repositories;
 using o_campista.repository.Repositories;
 
@@ -21,9 +22,11 @@ builder.Services.AddSwaggerGen();
 
 //services
 builder.Services.AddScoped<IMapaService, MapaService>();
+builder.Services.AddScoped<IAuthService,AuthService>();
 
 //repositories
 builder.Services.AddScoped<ICampingRepository, CampingRepository>();
+builder.Services.AddScoped<IUsuarioRepository,UsuarioRepository>();
 
 builder.Services.AddCors(options =>
 {
@@ -36,6 +39,13 @@ builder.Services.AddCors(options =>
                 .AllowAnyMethod()
                 .AllowAnyOrigin();
         });
+});
+builder.Services.AddDbContext<CampistaDbContext>(options =>
+{
+    options.UseNpgsql(
+        builder.Configuration.GetConnectionString("DefaultConnection"))
+    .EnableSensitiveDataLogging()
+    .LogTo(Console.WriteLine);
 });
 
 var app = builder.Build();

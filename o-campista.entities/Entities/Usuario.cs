@@ -21,5 +21,8 @@ public class Usuario
     [Column("nivel")]
     public int Nivel { get; set; } 
     [Column("xp")]
-    public int XP { get; set; } 
+    public int XP { get; set; }
+    public virtual ICollection<UsuarioConquista> UsuarioConquistas { get; set; } = [];
+
+    public virtual ICollection<UsuarioPresente> UsuarioPresentes { get; set; } = [];
 }

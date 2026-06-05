@@ -1,0 +1,14 @@
+﻿
+using o_campista.shared.Models.Requests;
+using o_campista.shared.Models.Responses;
+
+namespace o_campista.business.IServices;
+
+public interface IAuthService
+{
+    Task<LoginResponse> LoginAsync(
+        LoginRequest request);
+
+    Task RegistrarAsync(
+        RegisterRequest request);
+}

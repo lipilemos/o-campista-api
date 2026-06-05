@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using o_campista.api.Services;
+using o_campista.business.IServices;
 using o_campista.shared.Models.Responses;
 
 namespace o_campista.api.Controllers;
