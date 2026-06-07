@@ -140,29 +140,60 @@ create table tb_usuario_conquista (
         references tb_conquista(id)
 );
 
-create table tb_presente
-(
-    id bigint generated always as identity primary key,
-    nome varchar(200) not null,
-    descricao text,
-    codigo_resgate varchar(100)
+-- Habilitar a extensão para cálculos de distância (necessário para o filtro de km)
+CREATE EXTENSION IF NOT EXISTS postgis;
+
+-- Tabela de Presentes atualizada com localização e foto
+CREATE TABLE tb_presente (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    nome VARCHAR(200) NOT NULL,
+    descricao TEXT,
+    foto_url TEXT NOT NULL,                  -- URL da foto do presente
+    location GEOGRAPHY(POINT) NOT NULL,       -- Localização (Latitude e Longitude)
+    codigo_resgate VARCHAR(100),
+    usuario_criador_id UUID NOT NULL,        -- FK para quem deixou o presente
+    esta_disponivel BOOLEAN DEFAULT TRUE,    -- Controle para sumir do mapa
+    criado_em TIMESTAMP DEFAULT NOW(),
+
+    CONSTRAINT fk_presente_criador
+        FOREIGN KEY (usuario_criador_id)
+        REFERENCES tb_usuario(id)
 );
 
-create table tb_usuario_presente
-(
-    usuario_id uuid not null,
-    presente_id bigint not null,
-    utilizado boolean not null default false,
-    criado_em timestamp not null default current_timestamp,
-    primary key
-    (
-        usuario_id,
-        presente_id
-    ),
-    constraint fk_usuario_presente_usuario
-        foreign key (usuario_id)
-        references tb_usuario(id),
+CREATE TABLE tb_usuario_presente (
+    usuario_id UUID NOT NULL,
+    presente_id BIGINT NOT NULL,
+    utilizado BOOLEAN NOT NULL DEFAULT FALSE,
+    criado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    
+    PRIMARY KEY (usuario_id, presente_id),
+    
+    CONSTRAINT fk_usuario_presente_usuario
+        FOREIGN KEY (usuario_id)
+        REFERENCES tb_usuario(id),
     constraint fk_usuario_presente_presente
-        foreign key (presente_id)
-        references tb_presente(id)
+        FOREIGN KEY (presente_id)
+        REFERENCES tb_presente(id)
 );
+CREATE INDEX idx_tb_presente_location ON tb_presente USING GIST (location);
+
+--Função para Filtrar por Raio (X km)
+create or replace function buscar_presentes_proximos(
+    user_lat double precision,
+    user_lon double precision,
+    raio_metros integer
+)
+returns setof tb_presente
+language sql
+as $$
+    select *
+    from tb_presente
+    where ST_DWithin(
+        location,
+        ST_SetSRID(
+            ST_MakePoint(user_lon, user_lat),
+            4326
+        )::geography,
+        raio_metros
+    );
+$$;

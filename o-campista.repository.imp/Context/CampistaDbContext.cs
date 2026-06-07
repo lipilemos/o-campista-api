@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using o_campista.entities.Entities;
 
+
 namespace o_campista.api.Context
 {
     public class CampistaDbContext : DbContext
@@ -10,9 +11,13 @@ namespace o_campista.api.Context
             DbContextOptions<CampistaDbContext> options
         ) : base(options)
         {
+
         }
+        public IQueryable<Presente> BuscarPresentesProximos(double lat, double lon, double raio)
+        => FromExpression(() => BuscarPresentesProximos(lat, lon, raio));
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
             modelBuilder.Entity<CampingRecurso>()
                 .HasKey(x => new
                 {
@@ -32,6 +37,13 @@ namespace o_campista.api.Context
                     x.UsuarioId,
                     x.PresenteId
                 });
+            modelBuilder.Entity<Presente>()
+                .Property(x => x.Location)
+                .HasColumnType("geography(Point,4326)");
+
+            modelBuilder.HasDbFunction(typeof(CampistaDbContext)
+            .GetMethod(nameof(BuscarPresentesProximos), new[] { typeof(double), typeof(double), typeof(double) })!)
+            .HasName("buscar_presentes_proximos"); // Nome exato criado no SQL
 
             base.OnModelCreating(modelBuilder);
         }

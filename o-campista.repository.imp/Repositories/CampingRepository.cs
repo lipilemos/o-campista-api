@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using o_campista.api.Context;
 using o_campista.entities.Entities;
-using o_campista.repository.Repositories;
+using o_campista.repository.IRepositories;
 using System;
 using System.Collections.Generic;
 using System.Text;

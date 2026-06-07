@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace o_campista.repository.Repositories
+namespace o_campista.repository.IRepositories
 {
     public interface IUsuarioRepository
     {

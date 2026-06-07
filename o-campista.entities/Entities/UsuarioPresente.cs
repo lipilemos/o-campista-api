@@ -18,7 +18,7 @@ namespace o_campista.entities.Entities
         public bool Utilizado { get; set; }
 
         [Column("criado_em")]
-        public DateTime CriadoEm { get; set; }
+        public DateTime CriadoEm { get; set; } = DateTime.UtcNow;
 
         [ForeignKey(nameof(UsuarioId))]
         public virtual Usuario Usuario { get; set; } = null!;
