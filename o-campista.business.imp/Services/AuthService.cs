@@ -1,7 +1,7 @@
 ﻿using o_campista.api.Services;
 using o_campista.business.IServices;
 using o_campista.entities.Entities;
-using o_campista.repository.Repositories;
+using o_campista.repository.IRepositories;
 using o_campista.shared.Models.Requests;
 using o_campista.shared.Models.Responses;
 

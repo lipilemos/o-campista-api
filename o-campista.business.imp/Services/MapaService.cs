@@ -1,5 +1,5 @@
 ﻿using o_campista.business.IServices;
-using o_campista.repository.Repositories;
+using o_campista.repository.IRepositories;
 using o_campista.shared.Models.Responses;
 
 namespace o_campista.business.imp.Services;
