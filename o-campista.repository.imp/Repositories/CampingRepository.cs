@@ -26,5 +26,14 @@ namespace o_campista.repository.imp.Repositories
                     .ThenInclude(x => x.Recurso)
                 .ToListAsync();
         }
+        public async Task<Camping?> ObterPorIdAsync(long id)
+        {
+            return await _context.Campings
+                .Include(x => x.Fotos)
+                .Include(x => x.Recursos)
+                    .ThenInclude(x => x.Recurso)
+                .FirstOrDefaultAsync(x => x.Id == id);
+        }
+
     }
 }

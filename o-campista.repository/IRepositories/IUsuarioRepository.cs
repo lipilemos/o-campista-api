@@ -11,5 +11,7 @@ namespace o_campista.repository.IRepositories
         Task<bool> EmailExisteAsync(string email);
         Task AdicionarAsync(Usuario usuario);
         Task SalvarAlteracoesAsync();
+        Task<Usuario?> ObterPorIdAsync(Guid id);
+        Task AtualizarAsync(Usuario usuario);
     }
 }

@@ -32,11 +32,13 @@ builder.Services.AddScoped<IMapaService, MapaService>();
 builder.Services.AddScoped<IAuthService,AuthService>();
 builder.Services.AddScoped<IPresenteService, PresenteService>();
 builder.Services.AddScoped<IStorageService, StorageService>();
+builder.Services.AddScoped<ICheckinService,CheckinService>();
 
 //repositories
 builder.Services.AddScoped<ICampingRepository, CampingRepository>();
 builder.Services.AddScoped<IUsuarioRepository,UsuarioRepository>();
 builder.Services.AddScoped<IPresenteRepository, PresenteRepository>();
+builder.Services.AddScoped<ICheckinRepository,CheckinRepository>();
 
 builder.Services.AddCors(options =>
 {

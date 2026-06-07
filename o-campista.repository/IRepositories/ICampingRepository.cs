@@ -8,6 +8,7 @@ namespace o_campista.repository.IRepositories
     public interface ICampingRepository
     {
         Task<IEnumerable<Camping>> ObterCampingsMapaAsync();
+        Task<Camping?> ObterPorIdAsync(long id);
     }
 }
 

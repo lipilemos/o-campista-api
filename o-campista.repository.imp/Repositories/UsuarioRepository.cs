@@ -15,6 +15,13 @@ namespace o_campista.repository.imp.Repositories
             _context = context;
         }
 
+        public async Task<Usuario?> ObterPorIdAsync(Guid id)
+        {
+            return await _context.Usuarios
+                .Include(x => x.UsuarioConquistas)
+                .Include(x => x.UsuarioPresentes)
+                .FirstOrDefaultAsync(x => x.Id == id);
+        }
         public async Task<Usuario?> ObterPorEmailAsync(
             string email)
         {
@@ -23,6 +30,8 @@ namespace o_campista.repository.imp.Repositories
                     .ThenInclude(x => x.Conquista)
                 .Include(x => x.UsuarioPresentes)
                     .ThenInclude(x => x.Presente)
+                .Include(x => x.Checkins)
+                    .ThenInclude(x => x.Camping)
                 .FirstOrDefaultAsync(
                     x => x.Email == email);
         }
@@ -42,6 +51,12 @@ namespace o_campista.repository.imp.Repositories
 
         public async Task SalvarAlteracoesAsync()
         {
+            await _context.SaveChangesAsync();
+        }
+        public async Task AtualizarAsync(Usuario usuario)
+        {
+            _context.Usuarios.Update(usuario);
+
             await _context.SaveChangesAsync();
         }
     }

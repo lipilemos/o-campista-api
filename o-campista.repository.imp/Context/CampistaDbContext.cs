@@ -40,6 +40,16 @@ namespace o_campista.api.Context
             modelBuilder.Entity<Presente>()
                 .Property(x => x.Location)
                 .HasColumnType("geography(Point,4326)");
+            
+            modelBuilder.Entity<Checkin>()
+                .HasOne(x => x.Usuario)
+                .WithMany(x => x.Checkins)
+                .HasForeignKey(x => x.UsuarioId);
+
+            modelBuilder.Entity<Checkin>()
+                .HasOne(x => x.Camping)
+                .WithMany()
+                .HasForeignKey(x => x.CampingId);
 
             modelBuilder.HasDbFunction(typeof(CampistaDbContext)
             .GetMethod(nameof(BuscarPresentesProximos), new[] { typeof(double), typeof(double), typeof(double) })!)
@@ -55,8 +65,9 @@ namespace o_campista.api.Context
         public DbSet<Trilha> Trilhas { get; set; }
         public DbSet<TrilhaPonto> TrilhaPontos { get; set; }
         public DbSet<Conquista> Conquistas { get; set; }
-        public DbSet<Presente> Presentes { get; set; }
-        public DbSet<UsuarioConquista> UsuarioConquistas { get; set; }
+        public DbSet<Presente> Presentes { get; set; }    
+        public DbSet<UsuarioConquista> UsuarioConquistas { get; set; } 
         public DbSet<UsuarioPresente> UsuarioPresentes { get; set; }
+        public DbSet<Checkin> Checkins { get; set; }
     }
 }
