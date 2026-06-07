@@ -9,6 +9,7 @@ public class LoginResponse
     public string Token { get; set; } = string.Empty;
     public int Nivel { get; set; }
     public int Xp { get; set; }
+    public int XpProximoNivel { get; set; }
     public int TotalCheckins { get; set; }
     public int TotalCampingsVisitados { get; set; }
     public int TotalTrilhasConcluidas { get; set; }

@@ -25,4 +25,5 @@ public class Usuario
     public virtual ICollection<UsuarioConquista> UsuarioConquistas { get; set; } = [];
 
     public virtual ICollection<UsuarioPresente> UsuarioPresentes { get; set; } = [];
+    public virtual ICollection<Checkin> Checkins { get; set; }= new List<Checkin>();
 }

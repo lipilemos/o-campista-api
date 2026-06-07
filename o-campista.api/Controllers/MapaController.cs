@@ -23,16 +23,5 @@ public class MapaController : ControllerBase
         var resultado = await _mapaService.ObterCampingsMapaAsync();
 
         return Ok(resultado);
-    }
-    [HttpPost("campings/{campingId}/checkin")]
-    public IActionResult Checkin(int campingId)
-    {
-        return Ok(new CheckinResponse
-        {
-            Sucesso = true,
-            XpGanho = 100,
-            NivelAtual = 2,
-            Mensagem = "Check-in realizado com sucesso!"
-        });
-    }
+    }    
 }

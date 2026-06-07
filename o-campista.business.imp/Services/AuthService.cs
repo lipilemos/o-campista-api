@@ -1,4 +1,5 @@
 ﻿using o_campista.api.Services;
+using o_campista.business.imp.Dictionaries;
 using o_campista.business.IServices;
 using o_campista.entities.Entities;
 using o_campista.repository.IRepositories;
@@ -55,6 +56,9 @@ namespace o_campista.business.imp.Services
                 Token = token,
                 Nivel = usuario.Nivel,
                 Xp = usuario.XP,
+                XpProximoNivel = NivelXpDictionary.ObterXpProximoNivel(usuario.Nivel),
+                TotalCheckins = usuario.Checkins.Count,
+                TotalCampingsVisitados = usuario.Checkins.Select(x => x.CampingId).Distinct().Count(),
                 Conquistas =
                     usuario.UsuarioConquistas
                         .Select(c => new ConquistaResponse
