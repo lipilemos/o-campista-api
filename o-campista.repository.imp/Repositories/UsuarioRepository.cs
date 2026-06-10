@@ -22,6 +22,23 @@ namespace o_campista.repository.imp.Repositories
                 .Include(x => x.UsuarioPresentes)
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
+        public async Task<Usuario?> ObterPorIdComDetalhesAsync(Guid id)
+        {
+            return await _context.Usuarios
+                .Include(x => x.UsuarioConquistas)
+                    .ThenInclude(x => x.Conquista)
+
+                .Include(x => x.UsuarioPresentes)
+                    .ThenInclude(x => x.Presente)
+
+                .Include(x => x.Checkins)
+                    .ThenInclude(x => x.Camping)
+
+                .Include(x => x.UsuarioTrilhas)
+                    .ThenInclude(x => x.Trilha)
+
+                .FirstOrDefaultAsync(x => x.Id == id);
+        }
         public async Task<Usuario?> ObterPorEmailAsync(
             string email)
         {
@@ -30,6 +47,8 @@ namespace o_campista.repository.imp.Repositories
                     .ThenInclude(x => x.Conquista)
                 .Include(x => x.UsuarioPresentes)
                     .ThenInclude(x => x.Presente)
+                .Include(x => x.UsuarioTrilhas)
+                    .ThenInclude(x => x.Trilha)
                 .Include(x => x.Checkins)
                     .ThenInclude(x => x.Camping)
                 .FirstOrDefaultAsync(

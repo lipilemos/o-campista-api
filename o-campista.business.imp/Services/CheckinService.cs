@@ -13,17 +13,23 @@ namespace o_campista.business.imp.Services
         private readonly ICheckinRepository _checkinRepository;
         private readonly ICampingRepository _campingRepository;
         private readonly IUsuarioRepository _usuarioRepository;
+        private readonly IUsuarioService _usuarioService;
+        private readonly IConquistaService _conquistaService;
         private readonly ILogger<CheckinService> _logger;
 
         public CheckinService(
             ICheckinRepository checkinRepository,
             ICampingRepository campingRepository,
             IUsuarioRepository usuarioRepository,
+            IUsuarioService usuarioService,
+            IConquistaService conquistaService,
             ILogger<CheckinService> logger)
         {
             _checkinRepository = checkinRepository;
             _campingRepository = campingRepository;
             _usuarioRepository = usuarioRepository;
+            _usuarioService = usuarioService;
+            _conquistaService = conquistaService;
             _logger = logger;
         }
 
@@ -68,21 +74,11 @@ namespace o_campista.business.imp.Services
                 CriadoEm = DateTime.UtcNow
             };
 
-            await _checkinRepository
-                .CriarAsync(checkin);
+            await _checkinRepository.CriarAsync(checkin);
 
-            var usuario =
-                await _usuarioRepository
-                    .ObterPorIdAsync(
-                        request.UsuarioId);
+            await _usuarioService.AdicionarXPAsync(request.UsuarioId, 100);
 
-            if (usuario is not null)
-            {
-                usuario.XP += 100;
-
-                await _usuarioRepository
-                    .AtualizarAsync(usuario);
-            }
+            await _conquistaService.VerificarConquistasAsync(request.UsuarioId);
 
             _logger.LogInformation(
                 "Check-in realizado com sucesso. Usuario={UsuarioId} Camping={CampingId}",

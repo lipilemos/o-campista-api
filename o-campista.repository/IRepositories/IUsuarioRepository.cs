@@ -8,10 +8,12 @@ namespace o_campista.repository.IRepositories
     public interface IUsuarioRepository
     {
         Task<Usuario?> ObterPorEmailAsync(string email);
+        Task<Usuario?> ObterPorIdComDetalhesAsync(Guid id);
         Task<bool> EmailExisteAsync(string email);
         Task AdicionarAsync(Usuario usuario);
         Task SalvarAlteracoesAsync();
         Task<Usuario?> ObterPorIdAsync(Guid id);
         Task AtualizarAsync(Usuario usuario);
+
     }
 }

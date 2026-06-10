@@ -6,7 +6,6 @@ using o_campista.repository.IRepositories;
 using o_campista.shared.Enums;
 using o_campista.shared.Models.Requests;
 using o_campista.shared.Models.Responses;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
@@ -17,16 +16,28 @@ namespace o_campista.business.imp.Services;
 public class PresenteService : IPresenteService
 {
     private readonly IPresenteRepository _repository;
+    private readonly IUsuarioRepository _usuarioRepository;
     private readonly IStorageService _storageService;
+    private readonly IUsuarioPresenteRepository _usuarioPresenteRepository;
+    private readonly IConquistaService _conquistaService;
+    private readonly IUsuarioService _usuarioService;
     private readonly ILogger<PresenteService> _logger;
 
     public PresenteService(
         IPresenteRepository repository,
+        IUsuarioRepository usuarioRepository,
+        IUsuarioService usuarioService,
+        IUsuarioPresenteRepository usuarioPresenteRepository,
         IStorageService storageService,
+        IConquistaService conquistaService,
         ILogger<PresenteService> logger)
     {
+        _usuarioRepository = usuarioRepository;
         _repository = repository;
         _storageService = storageService;
+        _usuarioService = usuarioService;
+        _conquistaService = conquistaService;
+        _usuarioPresenteRepository = usuarioPresenteRepository;
         _logger = logger;
     }
 
@@ -52,8 +63,7 @@ public class PresenteService : IPresenteService
                 longitude);
 
             var urlFoto =
-                await _storageService.UploadAsync(
-                    request.Foto, BucketTypeEnum.BucketGift);
+                await _storageService.UploadAsync(request.Foto, BucketTypeEnum.BucketGift);
 
             _logger.LogInformation(
                 "Upload da foto concluído. Url: {UrlFoto}",
@@ -84,6 +94,10 @@ public class PresenteService : IPresenteService
             };
 
             await _repository.CriarAsync(presente);
+            
+            await _usuarioService.AdicionarXPAsync(request.UsuarioCriadorId, 100);
+
+            await _conquistaService.VerificarConquistasAsync(request.UsuarioCriadorId);
 
             _logger.LogInformation(
                 "Presente criado. Id: {PresenteId}, Usuario: {UsuarioId}, Nome: {Nome}",
@@ -133,7 +147,7 @@ public class PresenteService : IPresenteService
                     EstaDisponivel = p.EstaDisponivel,
                     CriadoEm = p.CriadoEm,
                     Utilizado = false
-                });
+                }).Where(x=>x.EstaDisponivel == true);
 
             _logger.LogInformation(
                 "Busca concluída. {Quantidade} presentes encontrados.",
@@ -150,7 +164,48 @@ public class PresenteService : IPresenteService
             throw;
         }
     }
+    public async Task ResgatarAsync(ResgatarPresenteRequest request)
+    {
+        _logger.LogInformation(
+            "Iniciando resgate do presente {PresenteId} pelo usuário {UsuarioId}",
+            request.PresenteId,
+            request.UsuarioId);
 
+        var presente = await _repository.ObterPorIdAsync(request.PresenteId);
+
+        if (presente == null)
+            throw new Exception("Presente não encontrado.");
+
+        if (!presente.EstaDisponivel)
+            throw new Exception("Este presente já foi resgatado.");
+
+        if (presente.UsuarioCriadorId == request.UsuarioId)
+            throw new Exception("Você não pode resgatar o seu próprio presente.");
+
+        // 1 - Salva o vínculo usuário x presente
+        var usuarioPresente = new UsuarioPresente
+        {
+            UsuarioId = request.UsuarioId,
+            PresenteId = presente.Id,
+            Utilizado = false,
+            CriadoEm = DateTime.UtcNow
+        };
+
+        await _usuarioPresenteRepository.CriarAsync(usuarioPresente);
+
+        await _repository.MarcarComoResgatadoAsync(presente);
+
+        await _usuarioService.AdicionarXPAsync(request.UsuarioId,100);
+
+        // 4 - Verifica conquistas
+        await _conquistaService.VerificarConquistasAsync(request.UsuarioId);
+
+
+        _logger.LogInformation(
+            "Presente {PresenteId} resgatado com sucesso pelo usuário {UsuarioId}",
+            request.PresenteId,
+            request.UsuarioId);
+    }
     private static string GenerateCodigoResgate(Guid usuarioCriadorId,double latitude,double longitude)
     {
         var payload =

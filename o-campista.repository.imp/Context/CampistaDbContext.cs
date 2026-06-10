@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using o_campista.entities.Entities;
+using o_campista.entities.Entities.o_campista.entities.Entities;
 
 
 namespace o_campista.api.Context
@@ -68,6 +69,7 @@ namespace o_campista.api.Context
         public DbSet<Presente> Presentes { get; set; }    
         public DbSet<UsuarioConquista> UsuarioConquistas { get; set; } 
         public DbSet<UsuarioPresente> UsuarioPresentes { get; set; }
+        public DbSet<UsuarioTrilha> UsuarioTrilhas{ get; set; }
         public DbSet<Checkin> Checkins { get; set; }
     }
 }

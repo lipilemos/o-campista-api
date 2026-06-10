@@ -8,14 +8,12 @@ public class CheckinRepository : ICheckinRepository
 {
     private readonly CampistaDbContext _context;
 
-    public CheckinRepository(
-        CampistaDbContext context)
+    public CheckinRepository(CampistaDbContext context)
     {
         _context = context;
     }
 
-    public async Task CriarAsync(
-        Checkin checkin)
+    public async Task CriarAsync(Checkin checkin)
     {
         await _context.AddAsync(checkin);
 
@@ -35,11 +33,15 @@ public class CheckinRepository : ICheckinRepository
                 x.CriadoEm.Date == hoje);
     }
 
-    public async Task<int>
-        ObterQuantidadeCheckinsUsuarioAsync(
-            Guid usuarioId)
+    public async Task<int>ObterQuantidadeCheckinsUsuarioAsync(Guid usuarioId)
     {
         return await _context.Set<Checkin>()
+            .CountAsync(x =>
+                x.UsuarioId == usuarioId);
+    }
+    public async Task<int> ContarPorUsuarioAsync(Guid usuarioId)
+    {
+        return await _context.Checkins
             .CountAsync(x =>
                 x.UsuarioId == usuarioId);
     }

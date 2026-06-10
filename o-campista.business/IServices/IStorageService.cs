@@ -8,6 +8,6 @@ namespace o_campista.business.IServices
 {
     public interface IStorageService
     {
-        Task<string> UploadAsync(IFormFile arquivo, BucketTypeEnum tipo);
+        Task<string> UploadAsync(IFormFile arquivo, BucketTypeEnum type);
     }
 }

@@ -9,5 +9,9 @@ namespace o_campista.repository.IRepositories
     {
         Task CriarAsync(Presente presente);
         Task<IEnumerable<Presente>> ObterPresentesPorRaioAsync(double latitude, double longitude);
+        Task<int> ContarCriadosPorUsuarioAsync(Guid usuarioId);
+        Task<Presente?> ObterPorIdAsync(long id);
+        Task AtualizarAsync(Presente presente);
+        Task MarcarComoResgatadoAsync(Presente presenteId);
     }
 }

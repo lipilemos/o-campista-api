@@ -10,5 +10,6 @@ namespace o_campista.repository.IRepositories
         Task CriarAsync(Checkin checkin);
         Task<bool> JaExisteHojeAsync(Guid usuarioId,long campingId);
         Task<int> ObterQuantidadeCheckinsUsuarioAsync(Guid usuarioId);
+        Task<int> ContarPorUsuarioAsync(Guid usuarioId);
     }
 }

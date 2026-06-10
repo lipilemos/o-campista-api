@@ -32,7 +32,7 @@ namespace o_campista.entities.Entities
         public Guid UsuarioCriadorId { get; set; }
 
         [Column("esta_disponivel")]
-        public bool? EstaDisponivel { get; set; } = true;
+        public bool EstaDisponivel { get; set; } = true;
 
         [Column("criado_em")]
         public DateTime? CriadoEm { get; set; } = DateTime.UtcNow;

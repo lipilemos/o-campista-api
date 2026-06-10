@@ -43,5 +43,22 @@ namespace o_campista.api.Controllers
                 return BadRequest(new { mensagem = "Erro ao criar presente", erro = ex.Message });
             }
         }
+        [HttpPost("resgatar")]
+        public async Task<IActionResult> Resgatar([FromBody] ResgatarPresenteRequest request)
+        {
+            try
+            {
+                await _service.ResgatarAsync(request);
+
+                return Ok(new
+                {
+                    mensagem = "🎁 Presente resgatado com sucesso!"
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensagem = "Erro ao resgatar presente", erro = ex.Message });
+            }
+        }
     }
 }

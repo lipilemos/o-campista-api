@@ -1,9 +1,6 @@
 ﻿using o_campista.entities.Entities;
 using o_campista.shared.Models.Requests;
 using o_campista.shared.Models.Responses;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace o_campista.business.IServices
 {
@@ -11,5 +8,6 @@ namespace o_campista.business.IServices
     {
         Task<Presente> CriarNovoPresenteAsync(PresenteCreateRequest request);
         Task<IEnumerable<PresenteResponse>> ObterPresentesPorRaioAsync(double latitude, double longitude);
+        Task ResgatarAsync(ResgatarPresenteRequest request);
     }
 }

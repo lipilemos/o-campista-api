@@ -16,10 +16,9 @@ public class UsuarioConquista
 
     [Column("criado_em")]
     public DateTime CriadoEm { get; set; }
-
-    [ForeignKey(nameof(UsuarioId))]
+                                                                                                                                                                                                                                                                                                                                
     public virtual Usuario Usuario { get; set; } = null!;
 
-    [ForeignKey(nameof(ConquistaId))]
+ 
     public virtual Conquista Conquista { get; set; } = null!;
 }

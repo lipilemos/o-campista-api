@@ -33,8 +33,13 @@ builder.Services.AddScoped<IAuthService,AuthService>();
 builder.Services.AddScoped<IPresenteService, PresenteService>();
 builder.Services.AddScoped<IStorageService, StorageService>();
 builder.Services.AddScoped<ICheckinService,CheckinService>();
+builder.Services.AddScoped<IConquistaService,ConquistaService>();
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 
 //repositories
+builder.Services.AddScoped<IUsuarioConquistaRepository,UsuarioConquistaRepository>();
+builder.Services.AddScoped<ITrilhaRepository,TrilhaRepository>();
+builder.Services.AddScoped<IUsuarioPresenteRepository,UsuarioPresenteRepository>();
 builder.Services.AddScoped<ICampingRepository, CampingRepository>();
 builder.Services.AddScoped<IUsuarioRepository,UsuarioRepository>();
 builder.Services.AddScoped<IPresenteRepository, PresenteRepository>();

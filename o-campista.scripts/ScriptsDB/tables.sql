@@ -197,3 +197,29 @@ as $$
         raio_metros
     );
 $$;
+
+CREATE TABLE tb_usuario_trilha
+(
+    id BIGSERIAL PRIMARY KEY,
+
+    usuario_id UUID NOT NULL,
+    trilha_id BIGINT NOT NULL,
+
+    concluida BOOLEAN NOT NULL DEFAULT FALSE,
+
+    criado_em TIMESTAMP NOT NULL DEFAULT NOW(),
+
+    concluida_em TIMESTAMP NULL,
+
+    CONSTRAINT fk_usuario_trilha_usuario
+        FOREIGN KEY (usuario_id)
+        REFERENCES tb_usuario(id),
+
+    CONSTRAINT fk_usuario_trilha_trilha
+        FOREIGN KEY (trilha_id)
+        REFERENCES tb_trilha(id)
+);
+
+ALTER TABLE tb_usuario
+ALTER COLUMN data_criacao TYPE timestamp with time zone
+USING data_criacao AT TIME ZONE 'UTC';

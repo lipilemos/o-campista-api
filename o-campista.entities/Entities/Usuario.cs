@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using o_campista.entities.Entities.o_campista.entities.Entities;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace o_campista.entities.Entities;
 
@@ -23,7 +24,7 @@ public class Usuario
     [Column("xp")]
     public int XP { get; set; }
     public virtual ICollection<UsuarioConquista> UsuarioConquistas { get; set; } = [];
-
     public virtual ICollection<UsuarioPresente> UsuarioPresentes { get; set; } = [];
-    public virtual ICollection<Checkin> Checkins { get; set; }= new List<Checkin>();
+    public virtual ICollection<UsuarioTrilha> UsuarioTrilhas { get; set; } = [];
+    public virtual ICollection<Checkin> Checkins { get; set; } = [];
 }

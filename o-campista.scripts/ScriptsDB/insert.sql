@@ -210,3 +210,7 @@ values
     4.8,
     'Moderada'
 );
+
+ALTER TABLE tb_usuario_trilha
+ADD CONSTRAINT uq_usuario_trilha
+UNIQUE(usuario_id, trilha_id);
