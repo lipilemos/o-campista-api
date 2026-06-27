@@ -23,6 +23,8 @@ public class Usuario
     public int Nivel { get; set; } 
     [Column("xp")]
     public int XP { get; set; }
+    [Column("foto_perfil")]
+    public string? FotoPerfil { get; set; }
     public virtual ICollection<UsuarioConquista> UsuarioConquistas { get; set; } = [];
     public virtual ICollection<UsuarioPresente> UsuarioPresentes { get; set; } = [];
     public virtual ICollection<UsuarioTrilha> UsuarioTrilhas { get; set; } = [];

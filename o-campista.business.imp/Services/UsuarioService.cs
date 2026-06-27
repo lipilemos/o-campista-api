@@ -1,8 +1,10 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using o_campista.business.imp.Dictionaries;
 using o_campista.business.IServices;
 using o_campista.entities.Entities;
 using o_campista.repository.IRepositories;
+using o_campista.shared.Enums;
 using o_campista.shared.Models.Responses;
 
 namespace o_campista.business.imp.Services
@@ -10,13 +12,16 @@ namespace o_campista.business.imp.Services
     public class UsuarioService : IUsuarioService
     {
         private readonly IUsuarioRepository _usuarioRepository;
+        private readonly IStorageService _storageService;
         private readonly ILogger<UsuarioService> _logger;
 
         public UsuarioService(
             IUsuarioRepository usuarioRepository,
+            IStorageService storageService,
             ILogger<UsuarioService> logger)
         {
             _usuarioRepository = usuarioRepository;
+            _storageService = storageService;
             _logger = logger;
         }
 
@@ -49,7 +54,7 @@ namespace o_campista.business.imp.Services
                 Id = usuario.Id,
                 Nome = usuario.Nome,
                 Email = usuario.Email,
-                //FotoPerfil = usuario.FotoPerfil,
+                FotoPerfil = usuario.FotoPerfil ?? string.Empty,
                 Nivel = usuario.Nivel,
                 Xp = usuario.XP,
 
@@ -110,6 +115,30 @@ namespace o_campista.business.imp.Services
             await _usuarioRepository.AtualizarAsync(usuario);
         }
 
+
+        public async Task<LoginResponse> AtualizarFotoPerfilAsync(Guid usuarioId, IFormFile foto)
+        {
+            _logger.LogInformation(
+                "Atualizando foto de perfil do usuário {UsuarioId}",
+                usuarioId);
+
+            var usuario = await _usuarioRepository.ObterPorIdAsync(usuarioId);
+
+            if (usuario is null)
+                throw new Exception("Usuário não encontrado.");
+
+            var urlFoto = await _storageService.UploadAsync(foto, BucketTypeEnum.BucketUser);
+
+            usuario.FotoPerfil = urlFoto;
+
+            await _usuarioRepository.AtualizarAsync(usuario);
+
+            _logger.LogInformation(
+                "Foto de perfil atualizada para o usuário {UsuarioId}",
+                usuarioId);
+
+            return await ObterPerfilAsync(usuarioId);
+        }
 
         private void ValidarSubidaNivel(Usuario usuario)
         {
