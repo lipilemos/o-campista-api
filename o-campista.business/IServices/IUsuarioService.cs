@@ -1,4 +1,4 @@
-﻿using o_campista.shared.Models.Requests;
+﻿using Microsoft.AspNetCore.Http;
 using o_campista.shared.Models.Responses;
 
 namespace o_campista.business.IServices
@@ -7,5 +7,6 @@ namespace o_campista.business.IServices
     {
         Task<LoginResponse> ObterPerfilAsync(Guid usuarioId);
         Task AdicionarXPAsync(Guid usuarioId, int xp);
+        Task<LoginResponse> AtualizarFotoPerfilAsync(Guid usuarioId, IFormFile foto);
     }
 }
