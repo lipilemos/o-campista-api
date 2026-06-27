@@ -10,6 +10,7 @@ namespace o_campista.repository.IRepositories
         Task<List<CampingAvaliacao>> ObterPorCampingAsync(long campingId);
         Task<List<CampingAvaliacao>> ObterPorCampingEUsuarioAsync(long campingId, Guid usuarioId, long? checkinId = null);
         Task<List<CampingAvaliacao>> ObterTodosAsync();
+        Task<int> ContarPorUsuarioAsync(Guid usuarioId);
         Task AtualizarAsync(CampingAvaliacao avaliacao);
         Task DeletarAsync(long id);
     }
