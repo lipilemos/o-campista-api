@@ -11,4 +11,7 @@ public interface IAuthService
 
     Task RegistrarAsync(
         RegisterRequest request);
+
+    Task<LoginResponse> GoogleAuthAsync(
+        GoogleAuthRequest request);
 }
