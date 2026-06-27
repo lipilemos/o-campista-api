@@ -7,5 +7,6 @@ namespace o_campista.shared.Models.Requests
         public long CheckinId { get; set; }
         public int Nota { get; set; }
         public string Comentario { get; set; } = string.Empty;
+        public int XpGanho { get; set; }
     }
 }

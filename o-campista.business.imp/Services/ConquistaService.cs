@@ -17,6 +17,7 @@ namespace o_campista.business.imp.Services
         private readonly IUsuarioPresenteRepository _usuarioPresenteRepository;
         private readonly IUsuarioConquistaRepository _usuarioConquistaRepository;
         private readonly IUsuarioRepository _usuarioRepository;
+        private readonly ICampingAvaliacaoRepository _avaliacaoRepository;
         private readonly ILogger<ConquistaService> _logger;
 
         public ConquistaService(
@@ -26,6 +27,7 @@ namespace o_campista.business.imp.Services
             IUsuarioPresenteRepository usuarioPresenteRepository,
             IUsuarioConquistaRepository usuarioConquistaRepository,
             IUsuarioRepository usuarioRepository,
+            ICampingAvaliacaoRepository avaliacaoRepository,
             ILogger<ConquistaService> logger)
         {
             _checkinRepository = checkinRepository;
@@ -34,6 +36,7 @@ namespace o_campista.business.imp.Services
             _usuarioPresenteRepository = usuarioPresenteRepository;
             _usuarioConquistaRepository = usuarioConquistaRepository;
             _usuarioRepository = usuarioRepository;
+            _avaliacaoRepository = avaliacaoRepository;
             _logger = logger;
         }
 
@@ -49,6 +52,8 @@ namespace o_campista.business.imp.Services
 
             var usuario = await _usuarioRepository.ObterPorIdAsync(usuarioId);
 
+            var totalAvaliacoes = await _avaliacaoRepository.ContarPorUsuarioAsync(usuarioId);
+
             await VerificarConquistasCheckinAsync(usuarioId,totalCheckins);
 
             await VerificarConquistasTrilhasAsync(usuarioId,totalTrilhas);
@@ -58,6 +63,8 @@ namespace o_campista.business.imp.Services
             await VerificarConquistasDescobertaAsync(usuarioId,totalPresentesEncontrados);
 
             await VerificarConquistasNivelAsync(usuarioId,usuario?.Nivel ?? 1);
+
+            await VerificarConquistasAvaliacaoAsync(usuarioId, totalAvaliacoes);
         }
 
         private async Task VerificarConquistasCheckinAsync(Guid usuarioId,int totalCheckins)
@@ -118,6 +125,24 @@ namespace o_campista.business.imp.Services
             if (nivel >= 20)
                 await ConcederConquistaAsync(usuarioId, (long)ConquistaEnum.Nivel20);
         }
+        private async Task VerificarConquistasAvaliacaoAsync(Guid usuarioId, int totalAvaliacoes)
+        {
+            if (totalAvaliacoes >= 1)
+                await ConcederConquistaAsync(usuarioId, (long)ConquistaEnum.PrimeiraAvaliacao);
+
+            if (totalAvaliacoes >= 5)
+                await ConcederConquistaAsync(usuarioId, (long)ConquistaEnum.CriticoIniciante);
+
+            if (totalAvaliacoes >= 10)
+                await ConcederConquistaAsync(usuarioId, (long)ConquistaEnum.CriticoExperiente);
+
+            if (totalAvaliacoes >= 25)
+                await ConcederConquistaAsync(usuarioId, (long)ConquistaEnum.Avaliador);
+
+            if (totalAvaliacoes >= 50)
+                await ConcederConquistaAsync(usuarioId, (long)ConquistaEnum.MestreDasCriticas);
+        }
+
         private async Task ConcederConquistaAsync(Guid usuarioId,long conquistaId)
         {
             var jaPossui =

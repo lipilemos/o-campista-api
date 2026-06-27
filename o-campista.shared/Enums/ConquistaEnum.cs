@@ -30,6 +30,13 @@ namespace o_campista.shared.Enums
         // Níveis
         Nivel5 = 16,
         Nivel10 = 17,
-        Nivel20 = 18
+        Nivel20 = 18,
+
+        // Avaliações
+        PrimeiraAvaliacao = 19,
+        CriticoIniciante = 20,
+        CriticoExperiente = 21,
+        Avaliador = 22,
+        MestreDasCriticas = 23
     }
 }

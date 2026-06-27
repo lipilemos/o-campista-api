@@ -214,3 +214,10 @@ values
 ALTER TABLE tb_usuario_trilha
 ADD CONSTRAINT uq_usuario_trilha
 UNIQUE(usuario_id, trilha_id);
+
+INSERT INTO tb_conquista (id, nome, descricao, xp_bonus) VALUES
+(19, 'Primeira Avaliação',  'Avalie um camping pela primeira vez.', 50),
+(20, 'Crítico Iniciante',   'Avalie 5 campings.',                  100),
+(21, 'Crítico Experiente',  'Avalie 10 campings.',                 200),
+(22, 'Avaliador',           'Avalie 25 campings.',                 350),
+(23, 'Mestre das Críticas', 'Avalie 50 campings.',                 500);

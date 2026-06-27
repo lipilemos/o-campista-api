@@ -67,6 +67,12 @@ namespace o_campista.repository.imp.Repositories
                 .ToListAsync();
         }
 
+        public async Task<int> ContarPorUsuarioAsync(Guid usuarioId)
+        {
+            return await _context.Set<CampingAvaliacao>()
+                .CountAsync(x => x.UsuarioId == usuarioId);
+        }
+
         public async Task AtualizarAsync(CampingAvaliacao avaliacao)
         {
             _context.Update(avaliacao);

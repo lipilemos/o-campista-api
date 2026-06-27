@@ -12,17 +12,23 @@ namespace o_campista.business.imp.Services
         private readonly ICampingAvaliacaoRepository _avaliacaoRepository;
         private readonly ICampingRepository _campingRepository;
         private readonly ICheckinRepository _checkinRepository;
+        private readonly IUsuarioService _usuarioService;
+        private readonly IConquistaService _conquistaService;
         private readonly ILogger<CampingAvaliacaoService> _logger;
 
         public CampingAvaliacaoService(
             ICampingAvaliacaoRepository avaliacaoRepository,
             ICampingRepository campingRepository,
             ICheckinRepository checkinRepository,
+            IUsuarioService usuarioService,
+            IConquistaService conquistaService,
             ILogger<CampingAvaliacaoService> logger)
         {
             _avaliacaoRepository = avaliacaoRepository;
             _campingRepository = campingRepository;
             _checkinRepository = checkinRepository;
+            _usuarioService = usuarioService;
+            _conquistaService = conquistaService;
             _logger = logger;
         }
 
@@ -66,6 +72,9 @@ namespace o_campista.business.imp.Services
             };
 
             await _avaliacaoRepository.CriarAsync(avaliacao);
+
+            await _usuarioService.AdicionarXPAsync(request.UsuarioId, request.XpGanho);
+            await _conquistaService.VerificarConquistasAsync(request.UsuarioId);
 
             await AtualizarMediaCampingAsync(request.CampingId);
 
