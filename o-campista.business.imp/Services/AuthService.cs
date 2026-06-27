@@ -1,4 +1,6 @@
-﻿using o_campista.api.Services;
+﻿using Google.Apis.Auth;
+using Microsoft.Extensions.Configuration;
+using o_campista.api.Services;
 using o_campista.business.imp.Dictionaries;
 using o_campista.business.IServices;
 using o_campista.entities.Entities;
@@ -11,11 +13,14 @@ namespace o_campista.business.imp.Services
     public class AuthService : IAuthService
     {
         private readonly IUsuarioRepository _usuarioRepository;
+        private readonly IConfiguration _configuration;
 
         public AuthService(
-            IUsuarioRepository usuarioRepository)
+            IUsuarioRepository usuarioRepository,
+            IConfiguration configuration)
         {
             _usuarioRepository = usuarioRepository;
+            _configuration = configuration;
         }
 
         public async Task<LoginResponse> LoginAsync(
@@ -122,6 +127,94 @@ namespace o_campista.business.imp.Services
 
             await _usuarioRepository
                 .SalvarAlteracoesAsync();
+        }
+
+        public async Task<LoginResponse> GoogleAuthAsync(
+            GoogleAuthRequest request)
+        {
+            GoogleJsonWebSignature.Payload payload;
+
+            try
+            {
+                var settings = new GoogleJsonWebSignature.ValidationSettings
+                {
+                    Audience = [_configuration["Google:ClientId"]!]
+                };
+
+                payload = await GoogleJsonWebSignature
+                    .ValidateAsync(request.IdToken, settings);
+            }
+            catch (InvalidJwtException)
+            {
+                throw new UnauthorizedAccessException(
+                    "Token do Google inválido");
+            }
+
+            var usuario =
+                await _usuarioRepository
+                    .ObterPorEmailAsync(payload.Email);
+
+            if (usuario is null)
+            {
+                var novoUsuario = new Usuario
+                {
+                    Nome = payload.Name,
+                    Email = payload.Email,
+                    SenhaHash = string.Empty,
+                    Ativo = true,
+                    Nivel = 1,
+                    XP = 0,
+                    DataCriacao = DateTime.UtcNow
+                };
+
+                await _usuarioRepository
+                    .AdicionarAsync(novoUsuario);
+
+                await _usuarioRepository
+                    .SalvarAlteracoesAsync();
+
+                usuario = await _usuarioRepository
+                    .ObterPorEmailAsync(payload.Email);
+            }
+
+            var token =
+                new TokenService()
+                    .GenerateToken(usuario!.Email);
+
+            return new LoginResponse
+            {
+                Id = usuario.Id,
+                Nome = usuario.Nome,
+                Email = usuario.Email,
+                FotoPerfil = payload.Picture ?? string.Empty,
+                Token = token,
+                Nivel = usuario.Nivel,
+                Xp = usuario.XP,
+                XpProximoNivel = NivelXpDictionary.ObterXpProximoNivel(usuario.Nivel),
+                TotalCheckins = usuario.Checkins.Count,
+                TotalCampingsVisitados = usuario.Checkins.Select(x => x.CampingId).Distinct().Count(),
+                TotalTrilhasConcluidas = usuario.UsuarioTrilhas.Count(x => x.Concluida),
+                Conquistas =
+                    usuario.UsuarioConquistas
+                        .Select(c => new ConquistaResponse
+                        {
+                            Id = c.Conquista.Id,
+                            Nome = c.Conquista.Nome,
+                            Descricao = c.Conquista.Descricao,
+                            Icone = c.Conquista.Icone,
+                            DataConquista = c.CriadoEm
+                        }),
+                Presentes =
+                    usuario.UsuarioPresentes
+                        .Select(p => new PresenteResponse
+                        {
+                            Id = p.Presente.Id,
+                            Nome = p.Presente.Nome,
+                            Descricao = p.Presente.Descricao,
+                            CodigoResgate = p.Presente.CodigoResgate,
+                            Utilizado = p.Utilizado
+                        })
+            };
         }
     }
 }
