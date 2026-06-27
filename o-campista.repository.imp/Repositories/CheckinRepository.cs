@@ -45,4 +45,14 @@ public class CheckinRepository : ICheckinRepository
             .CountAsync(x =>
                 x.UsuarioId == usuarioId);
     }
+
+    public async Task<List<Checkin>> ObtenerHistoricoAsync(Guid usuarioId)
+    {
+        return await _context.Set<Checkin>()
+            .Where(x => x.UsuarioId == usuarioId)
+            .Include(x => x.Camping)
+            .ThenInclude(x=>x.Fotos)
+            .OrderByDescending(x => x.CriadoEm)
+            .ToListAsync();
+    }
 }

@@ -27,4 +27,5 @@ public class Usuario
     public virtual ICollection<UsuarioPresente> UsuarioPresentes { get; set; } = [];
     public virtual ICollection<UsuarioTrilha> UsuarioTrilhas { get; set; } = [];
     public virtual ICollection<Checkin> Checkins { get; set; } = [];
+    public virtual ICollection<CampingAvaliacao> Avaliacoes { get; set; } = [];
 }

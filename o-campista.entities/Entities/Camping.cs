@@ -63,5 +63,7 @@ namespace o_campista.entities.Entities
         public virtual ICollection<CampingRecurso> Recursos { get; set; } = [];
 
         public virtual ICollection<Trilha> Trilhas { get; set; } = [];
+
+        public virtual ICollection<CampingAvaliacao> Avaliacoes { get; set; } = [];
     }
 }

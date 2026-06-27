@@ -35,6 +35,7 @@ builder.Services.AddScoped<IStorageService, StorageService>();
 builder.Services.AddScoped<ICheckinService,CheckinService>();
 builder.Services.AddScoped<IConquistaService,ConquistaService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddScoped<ICampingAvaliacaoService, CampingAvaliacaoService>();
 
 //repositories
 builder.Services.AddScoped<IUsuarioConquistaRepository,UsuarioConquistaRepository>();
@@ -44,6 +45,7 @@ builder.Services.AddScoped<ICampingRepository, CampingRepository>();
 builder.Services.AddScoped<IUsuarioRepository,UsuarioRepository>();
 builder.Services.AddScoped<IPresenteRepository, PresenteRepository>();
 builder.Services.AddScoped<ICheckinRepository,CheckinRepository>();
+builder.Services.AddScoped<ICampingAvaliacaoRepository, CampingAvaliacaoRepository>();
 
 builder.Services.AddCors(options =>
 {
