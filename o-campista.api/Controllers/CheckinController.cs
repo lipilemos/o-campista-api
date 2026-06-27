@@ -39,8 +39,28 @@ namespace o_campista.api.Controllers
                 {
                     mensagem = ex.Message
                 });
-                
+
+            }
+        }
+
+        [HttpGet("historico/{usuarioId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> ObterHistorico(Guid usuarioId)
+        {
+            try
+            {
+                var historico = await _checkinService.ObtenerHistoricoAsync(usuarioId);
+                return Ok(historico);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    mensagem = ex.Message
+                });
             }
         }
     }
 }
+

@@ -3,10 +3,11 @@ using o_campista.business.IServices;
 using o_campista.entities.Entities;
 using o_campista.repository.IRepositories;
 using o_campista.shared.Models.Requests;
+using o_campista.shared.Models.Responses;
 
 namespace o_campista.business.imp.Services
 {
-    
+
 
     public class CheckinService : ICheckinService
     {
@@ -84,6 +85,33 @@ namespace o_campista.business.imp.Services
                 "Check-in realizado com sucesso. Usuario={UsuarioId} Camping={CampingId}",
                 request.UsuarioId,
                 request.CampingId);
+        }
+
+        public async Task<List<HistoricoCheckinResponse>> ObtenerHistoricoAsync(Guid usuarioId)
+        {
+            var checkins = await _checkinRepository.ObtenerHistoricoAsync(usuarioId);
+
+            return checkins.Select(c => new HistoricoCheckinResponse
+            {
+                Id = c.Id,
+                UsuarioId = c.UsuarioId,
+                CampingId = c.CampingId,
+                Camping = new CampingInfoResponse
+                {
+                    Id = c.Camping.Id,
+                    Nome = c.Camping.Nome,
+                    Descricao = c.Camping.Descricao,
+                    Latitude = c.Camping.Latitude,
+                    Longitude = c.Camping.Longitude,
+                    Cidade = c.Camping?.Cidade,
+                    Estado = c.Camping?.Estado,
+                    Endereco = c.Camping?.Endereco,
+                    FotoPrincipal = c.Camping?.Fotos.FirstOrDefault().Url
+                },
+                DataCriacao = c.CriadoEm,
+                Latitude = c.Latitude,
+                Longitude = c.Longitude
+            }).ToList();
         }
     }
 }

@@ -80,15 +80,20 @@ create table tb_camping_avaliacao (
     id bigint generated always as identity primary key,
     camping_id bigint not null,
     usuario_id uuid not null,
-    nota integer not null,
-    comentario text,
+    checkin_id bigint unique,
+    nota integer not null check (nota >= 1 and nota <= 5),
+    comentario text not null,
     criado_em timestamp not null default current_timestamp,
+    atualizado_em timestamp,
     constraint fk_avaliacao_camping
         foreign key (camping_id)
         references tb_camping(id),
     constraint fk_avaliacao_usuario
         foreign key (usuario_id)
-        references tb_usuario(id)
+        references tb_usuario(id),
+    constraint fk_avaliacao_checkin
+        foreign key (checkin_id)
+        references tb_checkin(id)
 );
 
 create table tb_trilha (

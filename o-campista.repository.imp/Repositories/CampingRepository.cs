@@ -35,5 +35,21 @@ namespace o_campista.repository.imp.Repositories
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
+        public async Task AtualizarAsync(Camping camping)
+        {
+            camping.AtualizadoEm = DateTime.UtcNow;
+            _context.Update(camping);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task AtualizarMediaAvaliacaoAsync(long campingId, decimal mediaAvaliacao)
+        {
+            await _context.Set<Camping>()
+                .Where(c => c.Id == campingId)
+                .ExecuteUpdateAsync(s => s
+                    .SetProperty(c => c.AvaliacaoMedia, mediaAvaliacao)
+                    .SetProperty(c => c.AtualizadoEm, DateTime.UtcNow));
+        }
+
     }
 }

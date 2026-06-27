@@ -9,6 +9,8 @@ namespace o_campista.repository.IRepositories
     {
         Task<IEnumerable<Camping>> ObterCampingsMapaAsync();
         Task<Camping?> ObterPorIdAsync(long id);
+        Task AtualizarAsync(Camping camping);
+        Task AtualizarMediaAvaliacaoAsync(long campingId, decimal mediaAvaliacao);
     }
 }
 
