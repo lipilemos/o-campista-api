@@ -1,7 +1,6 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using o_campista.entities.Entities;
-using o_campista.entities.Entities.o_campista.entities.Entities;
 
 
 namespace o_campista.api.Context
@@ -52,9 +51,70 @@ namespace o_campista.api.Context
                 .WithMany()
                 .HasForeignKey(x => x.CampingId);
 
+            modelBuilder.Entity<MensagemChat>()
+                .HasOne(m => m.Usuario)
+                .WithMany()
+                .HasForeignKey(m => m.UsuarioId);
+
+            modelBuilder.Entity<MensagemChat>()
+                .HasOne(m => m.Camping)
+                .WithMany()
+                .HasForeignKey(m => m.CampingId);
+
+            modelBuilder.Entity<MensagemChat>()
+                .HasIndex(m => new { m.CampingId, m.DataEnvio })
+                .HasDatabaseName("IX_MensagensChat_CampingId_DataEnvio");
+
             modelBuilder.HasDbFunction(typeof(CampistaDbContext)
             .GetMethod(nameof(BuscarPresentesProximos), new[] { typeof(double), typeof(double), typeof(double) })!)
             .HasName("buscar_presentes_proximos"); // Nome exato criado no SQL
+
+            modelBuilder.Entity<SalaChatMembro>()
+                .HasKey(x => new { x.SalaId, x.UsuarioId });
+
+            modelBuilder.Entity<SalaChat>()
+                .HasOne(s => s.Camping)
+                .WithMany()
+                .HasForeignKey(s => s.CampingId);
+
+            modelBuilder.Entity<SalaChat>()
+                .HasOne(s => s.CriadoPor)
+                .WithMany()
+                .HasForeignKey(s => s.CriadoPorId);
+
+            modelBuilder.Entity<SalaChatMembro>()
+                .HasOne(m => m.Sala)
+                .WithMany(s => s.Membros)
+                .HasForeignKey(m => m.SalaId);
+
+            modelBuilder.Entity<SalaChatMembro>()
+                .HasOne(m => m.Usuario)
+                .WithMany()
+                .HasForeignKey(m => m.UsuarioId);
+
+            modelBuilder.Entity<MensagemSalaChat>()
+                .HasOne(m => m.Sala)
+                .WithMany(s => s.Mensagens)
+                .HasForeignKey(m => m.SalaId);
+
+            modelBuilder.Entity<MensagemSalaChat>()
+                .HasOne(m => m.Usuario)
+                .WithMany()
+                .HasForeignKey(m => m.UsuarioId);
+
+            modelBuilder.Entity<MensagemSalaChat>()
+                .HasIndex(m => new { m.SalaId, m.DataEnvio })
+                .HasDatabaseName("IX_MensagensSalaChat_SalaId_DataEnvio");
+
+            modelBuilder.Entity<SalaChat>()
+                .HasIndex(s => s.CampingId)
+                .HasDatabaseName("IX_SalaChat_CampingId");
+
+            modelBuilder.Entity<SalaChat>()
+                .HasIndex(s => s.CodigoConvite)
+                .IsUnique()
+                .HasFilter("codigo_convite IS NOT NULL")
+                .HasDatabaseName("IX_SalaChat_CodigoConvite");
 
             base.OnModelCreating(modelBuilder);
         }
@@ -71,5 +131,9 @@ namespace o_campista.api.Context
         public DbSet<UsuarioPresente> UsuarioPresentes { get; set; }
         public DbSet<UsuarioTrilha> UsuarioTrilhas{ get; set; }
         public DbSet<Checkin> Checkins { get; set; }
+        public DbSet<MensagemChat> MensagensChat { get; set; }
+        public DbSet<SalaChat> SalasChat { get; set; }
+        public DbSet<SalaChatMembro> SalaChatMembros { get; set; }
+        public DbSet<MensagemSalaChat> MensagensSalaChat { get; set; }
     }
 }

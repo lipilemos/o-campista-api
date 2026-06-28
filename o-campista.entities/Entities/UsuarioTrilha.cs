@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace o_campista.entities.Entities
-{
+﻿
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
@@ -38,4 +33,3 @@ namespace o_campista.entities.Entities
             public DateTime? ConcluidaEm { get; set; }
         }
     }
-}
