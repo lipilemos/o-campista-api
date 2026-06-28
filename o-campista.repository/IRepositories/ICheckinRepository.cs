@@ -13,5 +13,6 @@ namespace o_campista.repository.IRepositories
         Task<int> ContarPorUsuarioAsync(Guid usuarioId);
         Task<List<Checkin>> ObtenerHistoricoAsync(Guid usuarioId);
         Task<bool> TemCheckinNasUltimas24hAsync(Guid usuarioId, long campingId);
+        Task<int> ContarCheckinsUltimas24hAsync(long campingId);
     }
 }

@@ -60,5 +60,11 @@ namespace o_campista.repository.imp.Repositories
 
             await _context.SaveChangesAsync();
         }
+
+        public async Task DeletarAsync(Presente presente)
+        {
+            _context.Presentes.Remove(presente);
+            await _context.SaveChangesAsync();
+        }
     }
 }

@@ -276,6 +276,22 @@ namespace o_campista.business.imp.Services
             return sala;
         }
 
+        public async Task SairDoGrupoAsync(long salaId, Guid usuarioId)
+        {
+            var sala = await _salaRepository.ObterPorIdAsync(salaId);
+            if (sala is null)
+                throw new Exception("Sala não encontrada.");
+
+            if (sala.Tipo != "grupo")
+                throw new Exception("Só é possível sair de grupos.");
+
+            var ehMembro = await _salaRepository.UsuarioEhMembroAsync(salaId, usuarioId);
+            if (!ehMembro)
+                throw new Exception("Você não é membro deste grupo.");
+
+            await _salaRepository.RemoverMembroAsync(salaId, usuarioId);
+        }
+
         private static string GerarCodigoConvite()
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";

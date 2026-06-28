@@ -12,5 +12,6 @@ namespace o_campista.repository.IRepositories
         Task AdicionarMembroAsync(SalaChatMembro membro);
         Task<List<SalaChatMembro>> ObterMembrosAsync(long salaId);
         Task<bool> UsuarioEhMembroAsync(long salaId, Guid usuarioId);
+        Task RemoverMembroAsync(long salaId, Guid usuarioId);
     }
 }

@@ -37,5 +37,20 @@ namespace o_campista.api.Controllers
             var resultado = await _usuarioService.AtualizarFotoPerfilAsync(id, foto);
             return Ok(resultado);
         }
+
+        [HttpDelete("{id}")]
+        [Authorize]
+        public async Task<IActionResult> DeletarConta(Guid id)
+        {
+            try
+            {
+                await _usuarioService.DeletarContaAsync(id);
+                return Ok(new { mensagem = "Conta desativada com sucesso." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensagem = ex.Message });
+            }
+        }
     }
 }

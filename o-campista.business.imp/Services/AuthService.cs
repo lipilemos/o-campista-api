@@ -130,6 +130,104 @@ namespace o_campista.business.imp.Services
                 .SalvarAlteracoesAsync();
         }
 
+        public async Task ForgotPasswordAsync(
+            ForgotPasswordRequest request)
+        {
+            var usuario =
+                await _usuarioRepository
+                    .ObterPorEmailAsync(request.Email);
+
+            if (usuario is null)
+                return;
+
+            var token =
+                new TokenService()
+                    .GenerateResetToken(usuario.Email);
+
+            // TODO: Enviar email com link de recuperação contendo o token
+            // Por enquanto, o token é logado no console para desenvolvimento
+            Console.WriteLine(
+                $"[RESET PASSWORD] Token para {usuario.Email}: {token}");
+        }
+
+        public async Task ResetPasswordAsync(
+            ResetPasswordRequest request)
+        {
+            var email =
+                new TokenService()
+                    .ValidateResetToken(request.Token);
+
+            if (email is null)
+                throw new UnauthorizedAccessException(
+                    "Token inválido ou expirado");
+
+            var usuario =
+                await _usuarioRepository
+                    .ObterPorEmailAsync(email);
+
+            if (usuario is null)
+                throw new UnauthorizedAccessException(
+                    "Usuário não encontrado");
+
+            usuario.SenhaHash =
+                BCrypt.Net.BCrypt
+                    .HashPassword(request.NovaSenha);
+
+            await _usuarioRepository
+                .AtualizarAsync(usuario);
+        }
+
+        public async Task<LoginResponse> RefreshTokenAsync(
+            string email)
+        {
+            var usuario =
+                await _usuarioRepository
+                    .ObterPorEmailAsync(email);
+
+            if (usuario is null)
+                throw new UnauthorizedAccessException(
+                    "Usuário não encontrado");
+
+            var token =
+                new TokenService()
+                    .GenerateToken(usuario.Email);
+
+            return new LoginResponse
+            {
+                Id = usuario.Id,
+                Nome = usuario.Nome,
+                Email = usuario.Email,
+                FotoPerfil = usuario.FotoPerfil ?? string.Empty,
+                Token = token,
+                Nivel = usuario.Nivel,
+                Xp = usuario.XP,
+                XpProximoNivel = NivelXpDictionary.ObterXpProximoNivel(usuario.Nivel),
+                TotalCheckins = usuario.Checkins.Count,
+                TotalCampingsVisitados = usuario.Checkins.Select(x => x.CampingId).Distinct().Count(),
+                TotalTrilhasConcluidas = usuario.UsuarioTrilhas.Count(x => x.Concluida),
+                Conquistas =
+                    usuario.UsuarioConquistas
+                        .Select(c => new ConquistaResponse
+                        {
+                            Id = c.Conquista.Id,
+                            Nome = c.Conquista.Nome,
+                            Descricao = c.Conquista.Descricao,
+                            Icone = c.Conquista.Icone,
+                            DataConquista = c.CriadoEm
+                        }),
+                Presentes =
+                    usuario.UsuarioPresentes
+                        .Select(p => new PresenteResponse
+                        {
+                            Id = p.Presente.Id,
+                            Nome = p.Presente.Nome,
+                            Descricao = p.Presente.Descricao,
+                            CodigoResgate = p.Presente.CodigoResgate,
+                            Utilizado = p.Utilizado
+                        })
+            };
+        }
+
         public async Task<LoginResponse> GoogleAuthAsync(
             GoogleAuthRequest request)
         {

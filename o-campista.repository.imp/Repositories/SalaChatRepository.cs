@@ -70,5 +70,17 @@ namespace o_campista.repository.imp.Repositories
             return await _context.SalaChatMembros
                 .AnyAsync(m => m.SalaId == salaId && m.UsuarioId == usuarioId);
         }
+
+        public async Task RemoverMembroAsync(long salaId, Guid usuarioId)
+        {
+            var membro = await _context.SalaChatMembros
+                .FirstOrDefaultAsync(m => m.SalaId == salaId && m.UsuarioId == usuarioId);
+
+            if (membro is not null)
+            {
+                _context.SalaChatMembros.Remove(membro);
+                await _context.SaveChangesAsync();
+            }
+        }
     }
 }

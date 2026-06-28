@@ -13,5 +13,6 @@ namespace o_campista.repository.IRepositories
         Task<Presente?> ObterPorIdAsync(long id);
         Task AtualizarAsync(Presente presente);
         Task MarcarComoResgatadoAsync(Presente presenteId);
+        Task DeletarAsync(Presente presente);
     }
 }

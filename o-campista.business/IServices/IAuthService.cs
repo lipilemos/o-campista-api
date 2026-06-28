@@ -14,4 +14,13 @@ public interface IAuthService
 
     Task<LoginResponse> GoogleAuthAsync(
         GoogleAuthRequest request);
+
+    Task ForgotPasswordAsync(
+        ForgotPasswordRequest request);
+
+    Task ResetPasswordAsync(
+        ResetPasswordRequest request);
+
+    Task<LoginResponse> RefreshTokenAsync(
+        string email);
 }

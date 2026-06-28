@@ -206,6 +206,22 @@ public class PresenteService : IPresenteService
             request.PresenteId,
             request.UsuarioId);
     }
+    public async Task DeletarAsync(long presenteId, Guid usuarioId)
+    {
+        var presente = await _repository.ObterPorIdAsync(presenteId);
+
+        if (presente is null)
+            throw new Exception("Presente não encontrado.");
+
+        if (presente.UsuarioCriadorId != usuarioId)
+            throw new Exception("Você só pode deletar presentes que criou.");
+
+        if (!presente.EstaDisponivel)
+            throw new Exception("Não é possível deletar um presente já resgatado.");
+
+        await _repository.DeletarAsync(presente);
+    }
+
     private static string GenerateCodigoResgate(Guid usuarioCriadorId,double latitude,double longitude)
     {
         var payload =

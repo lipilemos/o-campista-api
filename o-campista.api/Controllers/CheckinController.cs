@@ -43,6 +43,14 @@ namespace o_campista.api.Controllers
             }
         }
 
+        [HttpGet("camping/{campingId}/recentes")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> ContarCheckinsRecentes(long campingId)
+        {
+            var quantidade = await _checkinService.ContarPessoasUltimas24hAsync(campingId);
+            return Ok(new { quantidade });
+        }
+
         [HttpGet("historico/{usuarioId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

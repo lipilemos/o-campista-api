@@ -176,6 +176,25 @@ namespace o_campista.api.Controllers
             }
         }
 
+        [HttpDelete("grupos/{salaId}/sair")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> SairDoGrupo(long salaId)
+        {
+            try
+            {
+                var usuario = await ObterUsuarioAutenticado();
+                if (usuario is null) return Unauthorized();
+
+                await _salaChatService.SairDoGrupoAsync(salaId, usuario.Id);
+                return Ok(new { mensagem = "Você saiu do grupo." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensagem = ex.Message });
+            }
+        }
+
         [HttpGet("nao-lidas")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]

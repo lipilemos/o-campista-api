@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using o_campista.business.IServices;
+using o_campista.repository.IRepositories;
 using o_campista.shared.Models.Requests;
 
 namespace o_campista.api.Controllers
@@ -9,10 +11,14 @@ namespace o_campista.api.Controllers
     public class PresenteController : ControllerBase
     {
         private readonly IPresenteService _service;
+        private readonly IUsuarioRepository _usuarioRepository;
 
-        public PresenteController(IPresenteService service)
+        public PresenteController(
+            IPresenteService service,
+            IUsuarioRepository usuarioRepository)
         {
             _service = service;
+            _usuarioRepository = usuarioRepository;
         }
 
         [HttpGet]
@@ -57,6 +63,27 @@ namespace o_campista.api.Controllers
             catch (Exception ex)
             {
                 return BadRequest(new { mensagem = "Erro ao resgatar presente", erro = ex.Message });
+            }
+        }
+
+        [Authorize]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Deletar(long id)
+        {
+            try
+            {
+                var email = User.Identity?.Name;
+                if (email is null) return Unauthorized();
+
+                var usuario = await _usuarioRepository.ObterPorEmailAsync(email);
+                if (usuario is null) return Unauthorized();
+
+                await _service.DeletarAsync(id, usuario.Id);
+                return Ok(new { mensagem = "Presente removido com sucesso." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensagem = ex.Message });
             }
         }
     }
