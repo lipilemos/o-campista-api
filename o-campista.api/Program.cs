@@ -62,6 +62,7 @@ builder.Services.AddScoped<IConquistaService, ConquistaService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<ICampingAvaliacaoService, CampingAvaliacaoService>();
 builder.Services.AddScoped<IChatService, ChatService>();
+builder.Services.AddScoped<ISalaChatService, SalaChatService>();
 
 //repositories
 builder.Services.AddScoped<IUsuarioConquistaRepository, UsuarioConquistaRepository>();
@@ -73,6 +74,8 @@ builder.Services.AddScoped<IPresenteRepository, PresenteRepository>();
 builder.Services.AddScoped<ICheckinRepository, CheckinRepository>();
 builder.Services.AddScoped<ICampingAvaliacaoRepository, CampingAvaliacaoRepository>();
 builder.Services.AddScoped<IMensagemChatRepository, MensagemChatRepository>();
+builder.Services.AddScoped<ISalaChatRepository, SalaChatRepository>();
+builder.Services.AddScoped<IMensagemSalaChatRepository, MensagemSalaChatRepository>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -92,7 +95,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             {
                 var accessToken = context.Request.Query["access_token"];
                 if (!string.IsNullOrEmpty(accessToken) &&
-                    context.HttpContext.Request.Path.StartsWithSegments("/chatHub"))
+                    (context.HttpContext.Request.Path.StartsWithSegments("/chatHub") ||
+                     context.HttpContext.Request.Path.StartsWithSegments("/notificationHub")))
                 {
                     context.Token = accessToken;
                 }
@@ -134,4 +138,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.MapHub<ChatHub>("/chatHub");
+app.MapHub<ChatNotificationHub>("/notificationHub");
 app.Run();
