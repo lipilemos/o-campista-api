@@ -17,14 +17,40 @@ namespace o_campista.repository.imp.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Camping>> ObterCampingsMapaAsync()
+        public async Task<IEnumerable<Camping>> ObterCampingsMapaAsync(string? busca = null, string? tipo = null, string[]? recursos = null)
         {
-            return await _context.Campings
+            var query = _context.Campings
                 .AsNoTracking()
                 .Include(x => x.Fotos)
                 .Include(x => x.Recursos)
                     .ThenInclude(x => x.Recurso)
-                .ToListAsync();
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(busca))
+            {
+                var termo = busca.ToLower();
+                query = query.Where(c =>
+                    c.Nome.ToLower().Contains(termo) ||
+                    (c.Cidade != null && c.Cidade.ToLower().Contains(termo)) ||
+                    (c.Estado != null && c.Estado.ToLower().Contains(termo)));
+            }
+
+            if (!string.IsNullOrWhiteSpace(tipo))
+            {
+                query = query.Where(c => c.Tipo == tipo);
+            }
+
+            if (recursos is { Length: > 0 })
+            {
+                foreach (var recurso in recursos)
+                {
+                    var r = recurso;
+                    query = query.Where(c =>
+                        c.Recursos.Any(cr => cr.Recurso.Nome == r && cr.Disponivel));
+                }
+            }
+
+            return await query.ToListAsync();
         }
         public async Task<Camping?> ObterPorIdAsync(long id)
         {

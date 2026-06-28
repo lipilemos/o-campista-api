@@ -20,11 +20,20 @@ public class MapaController : ControllerBase
 
     [HttpGet("campings")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> ObterCampings()
+    public async Task<IActionResult> ObterCampings(
+        [FromQuery] string? busca = null,
+        [FromQuery] string? tipo = null,
+        [FromQuery] string[]? recursos = null)
     {
-        var resultado = await _mapaService.ObterCampingsMapaAsync();
-
-        return Ok(resultado);
+        try
+        {
+            var resultado = await _mapaService.ObterCampingsMapaAsync(busca, tipo, recursos);
+            return Ok(resultado);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { mensagem = ex.Message });
+        }
     }
 
     [HttpGet("camping/{idcamping}/avaliacoes")]
