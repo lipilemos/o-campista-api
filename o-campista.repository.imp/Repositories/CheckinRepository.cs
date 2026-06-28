@@ -65,4 +65,14 @@ public class CheckinRepository : ICheckinRepository
                 c.CampingId == campingId &&
                 c.CriadoEm >= limite);
     }
+
+    public async Task<int> ContarCheckinsUltimas24hAsync(long campingId)
+    {
+        var limite = DateTime.UtcNow.AddHours(-24);
+        return await _context.Checkins
+            .Where(c => c.CampingId == campingId && c.CriadoEm >= limite)
+            .Select(c => c.UsuarioId)
+            .Distinct()
+            .CountAsync();
+    }
 }

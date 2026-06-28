@@ -118,5 +118,10 @@ namespace o_campista.business.imp.Services
                 Longitude = c.Longitude
             }).ToList();
         }
+
+        public async Task<int> ContarPessoasUltimas24hAsync(long campingId)
+        {
+            return await _checkinRepository.ContarCheckinsUltimas24hAsync(campingId);
+        }
     }
 }
