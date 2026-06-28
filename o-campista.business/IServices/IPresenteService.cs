@@ -9,5 +9,6 @@ namespace o_campista.business.IServices
         Task<Presente> CriarNovoPresenteAsync(PresenteCreateRequest request);
         Task<IEnumerable<PresenteResponse>> ObterPresentesPorRaioAsync(double latitude, double longitude);
         Task ResgatarAsync(ResgatarPresenteRequest request);
+        Task DeletarAsync(long presenteId, Guid usuarioId);
     }
 }

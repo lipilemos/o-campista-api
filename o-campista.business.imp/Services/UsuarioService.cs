@@ -140,6 +140,26 @@ namespace o_campista.business.imp.Services
             return await ObterPerfilAsync(usuarioId);
         }
 
+        public async Task DeletarContaAsync(Guid usuarioId)
+        {
+            var usuario = await _usuarioRepository.ObterPorIdAsync(usuarioId);
+
+            if (usuario is null)
+                throw new Exception("Usuário não encontrado.");
+
+            usuario.Ativo = false;
+            usuario.Email = $"deleted_{usuarioId}@removed.com";
+            usuario.Nome = "Usuário removido";
+            usuario.SenhaHash = string.Empty;
+            usuario.FotoPerfil = null;
+
+            await _usuarioRepository.AtualizarAsync(usuario);
+
+            _logger.LogInformation(
+                "Conta do usuário {UsuarioId} desativada (LGPD)",
+                usuarioId);
+        }
+
         private void ValidarSubidaNivel(Usuario usuario)
         {
             while (usuario.XP >= NivelXpDictionary.ObterXpProximoNivel(usuario.Nivel))

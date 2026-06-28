@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using o_campista.business.IServices;
 using o_campista.shared.Models.Requests;
+using System.Security.Claims;
 
 namespace o_campista.api.Controllers;
 
@@ -52,6 +54,56 @@ public class AuthController : ControllerBase
         catch (Exception ex)
         {
             return BadRequest(new { mensagem = ex.Message });
+        }
+    }
+
+    [HttpPost("forgot-password")]
+    public async Task<IActionResult> ForgotPassword(
+        ForgotPasswordRequest request)
+    {
+        await _authService
+            .ForgotPasswordAsync(request);
+
+        return Ok(new { mensagem = "Se o e-mail estiver cadastrado, enviaremos as instruções de recuperação." });
+    }
+
+    [HttpPost("reset-password")]
+    public async Task<IActionResult> ResetPassword(
+        ResetPasswordRequest request)
+    {
+        try
+        {
+            await _authService
+                .ResetPasswordAsync(request);
+
+            return Ok(new { mensagem = "Senha alterada com sucesso." });
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return BadRequest(new { mensagem = ex.Message });
+        }
+    }
+
+    [Authorize]
+    [HttpPost("refresh")]
+    public async Task<IActionResult> RefreshToken()
+    {
+        var email = User.FindFirst(ClaimTypes.Name)?.Value;
+
+        if (string.IsNullOrEmpty(email))
+            return Unauthorized();
+
+        try
+        {
+            var response =
+                await _authService
+                    .RefreshTokenAsync(email);
+
+            return Ok(response);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Unauthorized();
         }
     }
 }

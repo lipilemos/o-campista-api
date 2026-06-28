@@ -145,6 +145,23 @@ namespace o_campista.api.Hubs
             }
         }
 
+        public async Task Digitando()
+        {
+            if (!_connectionStore.TryGet(Context.ConnectionId, out var info) || info is null)
+                return;
+
+            if (info.SalaId.HasValue)
+            {
+                await Clients.OthersInGroup($"sala-{info.SalaId.Value}")
+                    .SendAsync("UsuarioDigitando", info.NomeUsuario);
+            }
+            else
+            {
+                await Clients.OthersInGroup($"camping-{info.CampingId}")
+                    .SendAsync("UsuarioDigitando", info.NomeUsuario);
+            }
+        }
+
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
             if (_connectionStore.TryGet(Context.ConnectionId, out var info) && info is not null)
