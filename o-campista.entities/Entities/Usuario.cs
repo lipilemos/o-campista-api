@@ -1,5 +1,4 @@
-﻿using o_campista.entities.Entities.o_campista.entities.Entities;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace o_campista.entities.Entities;
 

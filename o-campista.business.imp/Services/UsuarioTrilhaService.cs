@@ -1,6 +1,5 @@
 ﻿using o_campista.business.IServices;
 using o_campista.entities.Entities;
-using o_campista.entities.Entities.o_campista.entities.Entities;
 using o_campista.repository.IRepositories;
 using System;
 using System.Collections.Generic;

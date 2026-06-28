@@ -1,8 +1,4 @@
 ﻿using o_campista.entities.Entities;
-using o_campista.entities.Entities.o_campista.entities.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace o_campista.repository.IRepositories
 {

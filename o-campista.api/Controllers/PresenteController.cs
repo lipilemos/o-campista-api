@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using o_campista.business.IServices;
 using o_campista.shared.Models.Requests;
-using System.Globalization;
 
 namespace o_campista.api.Controllers
 {
@@ -34,7 +33,7 @@ namespace o_campista.api.Controllers
         public async Task<IActionResult> Criar([FromForm] PresenteCreateRequest request)
         {
             try
-            {  
+            {
                 var novoPresente = await _service.CriarNovoPresenteAsync(request);
                 return Ok();
             }

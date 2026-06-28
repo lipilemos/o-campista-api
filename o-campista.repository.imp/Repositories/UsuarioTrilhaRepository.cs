@@ -1,12 +1,11 @@
-﻿using o_campista.api.Context;
+﻿using Microsoft.EntityFrameworkCore;
+using o_campista.api.Context;
 using o_campista.entities.Entities;
 using o_campista.repository.IRepositories;
-using Microsoft.EntityFrameworkCore;
-using o_campista.entities.Entities.o_campista.entities.Entities;
 
 namespace o_campista.repository.imp.Repositories
 {
-    public class UsuarioTrilhaRepository: IUsuarioTrilhaRepository
+    public class UsuarioTrilhaRepository : IUsuarioTrilhaRepository
     {
         private readonly CampistaDbContext _context;
 
@@ -15,7 +14,7 @@ namespace o_campista.repository.imp.Repositories
             _context = context;
         }
 
-        public async Task<UsuarioTrilha?> ObterAsync(Guid usuarioId,long trilhaId)
+        public async Task<UsuarioTrilha?> ObterAsync(Guid usuarioId, long trilhaId)
         {
             return await _context.UsuarioTrilhas
                 .FirstOrDefaultAsync(x =>
@@ -39,7 +38,7 @@ namespace o_campista.repository.imp.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<int>ContarConcluidasPorUsuarioAsync(Guid usuarioId)
+        public async Task<int> ContarConcluidasPorUsuarioAsync(Guid usuarioId)
         {
             return await _context.UsuarioTrilhas
                 .CountAsync(x =>

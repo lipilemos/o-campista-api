@@ -55,4 +55,14 @@ public class CheckinRepository : ICheckinRepository
             .OrderByDescending(x => x.CriadoEm)
             .ToListAsync();
     }
+
+    public async Task<bool> TemCheckinNasUltimas24hAsync(Guid usuarioId, long campingId)
+    {
+        var limite = DateTime.UtcNow.AddHours(-24);
+        return await _context.Checkins
+            .AnyAsync(c =>
+                c.UsuarioId == usuarioId &&
+                c.CampingId == campingId &&
+                c.CriadoEm >= limite);
+    }
 }

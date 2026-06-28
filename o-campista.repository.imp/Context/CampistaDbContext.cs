@@ -1,7 +1,6 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using o_campista.entities.Entities;
-using o_campista.entities.Entities.o_campista.entities.Entities;
 
 
 namespace o_campista.api.Context
@@ -52,6 +51,20 @@ namespace o_campista.api.Context
                 .WithMany()
                 .HasForeignKey(x => x.CampingId);
 
+            modelBuilder.Entity<MensagemChat>()
+                .HasOne(m => m.Usuario)
+                .WithMany()
+                .HasForeignKey(m => m.UsuarioId);
+
+            modelBuilder.Entity<MensagemChat>()
+                .HasOne(m => m.Camping)
+                .WithMany()
+                .HasForeignKey(m => m.CampingId);
+
+            modelBuilder.Entity<MensagemChat>()
+                .HasIndex(m => new { m.CampingId, m.DataEnvio })
+                .HasDatabaseName("IX_MensagensChat_CampingId_DataEnvio");
+
             modelBuilder.HasDbFunction(typeof(CampistaDbContext)
             .GetMethod(nameof(BuscarPresentesProximos), new[] { typeof(double), typeof(double), typeof(double) })!)
             .HasName("buscar_presentes_proximos"); // Nome exato criado no SQL
@@ -71,5 +84,6 @@ namespace o_campista.api.Context
         public DbSet<UsuarioPresente> UsuarioPresentes { get; set; }
         public DbSet<UsuarioTrilha> UsuarioTrilhas{ get; set; }
         public DbSet<Checkin> Checkins { get; set; }
+        public DbSet<MensagemChat> MensagensChat { get; set; }
     }
 }

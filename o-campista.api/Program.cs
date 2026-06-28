@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using o_campista.api.Context;
+using o_campista.api.Hubs;
 using o_campista.business.imp.Services;
 using o_campista.business.IServices;
 using o_campista.repository.imp.Repositories;
@@ -27,6 +28,9 @@ builder.Services.AddDbContext<CampistaDbContext>(options =>
 );
 
 builder.Services.AddControllers();
+builder.Services.AddSignalR();
+builder.Services.AddMemoryCache();
+builder.Services.AddSingleton<ChatConnectionStore>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -57,6 +61,7 @@ builder.Services.AddScoped<ICheckinService, CheckinService>();
 builder.Services.AddScoped<IConquistaService, ConquistaService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<ICampingAvaliacaoService, CampingAvaliacaoService>();
+builder.Services.AddScoped<IChatService, ChatService>();
 
 //repositories
 builder.Services.AddScoped<IUsuarioConquistaRepository, UsuarioConquistaRepository>();
@@ -67,6 +72,7 @@ builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IPresenteRepository, PresenteRepository>();
 builder.Services.AddScoped<ICheckinRepository, CheckinRepository>();
 builder.Services.AddScoped<ICampingAvaliacaoRepository, CampingAvaliacaoRepository>();
+builder.Services.AddScoped<IMensagemChatRepository, MensagemChatRepository>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -79,6 +85,20 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuer = false,
             ValidateAudience = false
         };
+        // SignalR WebSocket connections cannot send headers; read token from query string
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"];
+                if (!string.IsNullOrEmpty(accessToken) &&
+                    context.HttpContext.Request.Path.StartsWithSegments("/chatHub"))
+                {
+                    context.Token = accessToken;
+                }
+                return Task.CompletedTask;
+            }
+        };
     });
 
 builder.Services.AddCors(options =>
@@ -88,7 +108,8 @@ builder.Services.AddCors(options =>
         policy
             .AllowAnyHeader()
             .AllowAnyMethod()
-            .AllowAnyOrigin();
+            .SetIsOriginAllowed(_ => true)
+            .AllowCredentials();
     });
 });
 
@@ -112,4 +133,5 @@ app.UseCors("AngularPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.MapHub<ChatHub>("/chatHub");
 app.Run();
