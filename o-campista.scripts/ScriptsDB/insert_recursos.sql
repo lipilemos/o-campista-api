@@ -1,0 +1,26 @@
+-- Inserção dos novos recursos (os já existentes são ignorados pelo ON CONFLICT)
+INSERT INTO tb_recurso (nome) VALUES
+('Chuveiro quente'),
+('Cozinha compartilhada'),
+('Água potável'),
+('Área para barracas'),
+('Área para motorhome'),
+('Chalés'),
+('Playground'),
+('Quadra esportiva'),
+('Lago para pesca'),
+('Cachoeira'),
+('Trilhas'),
+('Área para fogueira'),
+('Lanchonete'),
+('Conveniência'),
+('Aceita pets'),
+('Segurança 24h'),
+('Acessibilidade'),
+('Lavanderia'),
+('Redário'),
+('Quiosques'),
+('Salão de jogos'),
+('Locação de equipamentos'),
+('Carregador para veículo elétrico')
+ON CONFLICT (nome) DO NOTHING;

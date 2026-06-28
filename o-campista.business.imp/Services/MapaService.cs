@@ -15,11 +15,11 @@ public class MapaService : IMapaService
     }
 
     public async Task<IEnumerable<CampingMapaResponse>>
-        ObterCampingsMapaAsync()
+        ObterCampingsMapaAsync(string? busca = null, string? tipo = null, string[]? recursos = null)
     {
         var campings =
             await _campingRepository
-                .ObterCampingsMapaAsync();
+                .ObterCampingsMapaAsync(busca, tipo, recursos);
 
         return campings.Select(c => new CampingMapaResponse
         {
