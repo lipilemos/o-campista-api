@@ -22,9 +22,15 @@ public class MapaController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> ObterCampings()
     {
-        var resultado = await _mapaService.ObterCampingsMapaAsync();
-
-        return Ok(resultado);
+        try
+        {
+            var resultado = await _mapaService.ObterCampingsMapaAsync();
+            return Ok(resultado);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { mensagem = ex.Message });
+        }
     }
 
     [HttpGet("camping/{idcamping}/avaliacoes")]

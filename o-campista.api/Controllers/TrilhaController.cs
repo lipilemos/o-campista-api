@@ -17,12 +17,19 @@ namespace o_campista.api.Controllers
         [HttpPost("{trilhaId}/concluir")]
         public async Task<IActionResult> Concluir(long trilhaId,[FromQuery] Guid usuarioId)
         {
-            await _usuarioTrilhaService.ConcluirTrilhaAsync(usuarioId,trilhaId);
-
-            return Ok(new
+            try
             {
-                mensagem = "Trilha concluída com sucesso."
-            });
+                await _usuarioTrilhaService.ConcluirTrilhaAsync(usuarioId, trilhaId);
+
+                return Ok(new
+                {
+                    mensagem = "Trilha concluída com sucesso."
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensagem = ex.Message });
+            }
         }
     }
 }

@@ -28,18 +28,25 @@ namespace o_campista.api.Controllers
             [FromQuery] int limite = 50,
             [FromQuery] DateTime? antes = null)
         {
-            var email = User.Identity?.Name;
-            if (email is null) return Unauthorized();
+            try
+            {
+                var email = User.Identity?.Name;
+                if (email is null) return Unauthorized();
 
-            var usuario = await _usuarioRepository.ObterPorEmailAsync(email);
-            if (usuario is null) return Unauthorized();
+                var usuario = await _usuarioRepository.ObterPorEmailAsync(email);
+                if (usuario is null) return Unauthorized();
 
-            var temCheckin = await _chatService.TemCheckinValidoAsync(usuario.Id, campingId);
-            if (!temCheckin) return Forbid();
+                var temCheckin = await _chatService.TemCheckinValidoAsync(usuario.Id, campingId);
+                if (!temCheckin) return Forbid();
 
-            limite = Math.Clamp(limite, 1, 100);
-            var mensagens = await _chatService.ObterHistoricoAsync(campingId, limite, antes);
-            return Ok(mensagens);
+                limite = Math.Clamp(limite, 1, 100);
+                var mensagens = await _chatService.ObterHistoricoAsync(campingId, limite, antes);
+                return Ok(mensagens);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensagem = ex.Message });
+            }
         }
     }
 }

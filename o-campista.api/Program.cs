@@ -63,6 +63,7 @@ builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<ICampingAvaliacaoService, CampingAvaliacaoService>();
 builder.Services.AddScoped<IChatService, ChatService>();
 builder.Services.AddScoped<ISalaChatService, SalaChatService>();
+builder.Services.AddScoped<IUsuarioTrilhaService, UsuarioTrilhaService>();
 
 //repositories
 builder.Services.AddScoped<IUsuarioConquistaRepository, UsuarioConquistaRepository>();
@@ -76,6 +77,7 @@ builder.Services.AddScoped<ICampingAvaliacaoRepository, CampingAvaliacaoReposito
 builder.Services.AddScoped<IMensagemChatRepository, MensagemChatRepository>();
 builder.Services.AddScoped<ISalaChatRepository, SalaChatRepository>();
 builder.Services.AddScoped<IMensagemSalaChatRepository, MensagemSalaChatRepository>();
+builder.Services.AddScoped<IUsuarioTrilhaRepository, UsuarioTrilhaRepository>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
