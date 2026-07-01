@@ -43,27 +43,21 @@ namespace o_campista.business.imp.Services
         public async Task VerificarConquistasAsync(Guid usuarioId)
         {
             var totalCheckins = await _checkinRepository.ContarPorUsuarioAsync(usuarioId);
-
+            var totalCheckinsTrilha = await _checkinRepository.ContarCheckinsTrilhaPorUsuarioAsync(usuarioId);
             var totalTrilhas = await _trilhaRepository.ContarConcluidasPorUsuarioAsync(usuarioId);
-
+            var totalTrilhasCriadas = await _trilhaRepository.ContarCriadasPorUsuarioAsync(usuarioId);
             var totalPresentesCriados = await _presenteRepository.ContarCriadosPorUsuarioAsync(usuarioId);
-
             var totalPresentesEncontrados = await _usuarioPresenteRepository.ContarResgatadosPorUsuarioAsync(usuarioId);
-
             var usuario = await _usuarioRepository.ObterPorIdAsync(usuarioId);
-
             var totalAvaliacoes = await _avaliacaoRepository.ContarPorUsuarioAsync(usuarioId);
 
-            await VerificarConquistasCheckinAsync(usuarioId,totalCheckins);
-
-            await VerificarConquistasTrilhasAsync(usuarioId,totalTrilhas);
-
-            await VerificarConquistasPresentesAsync(usuarioId,totalPresentesCriados);
-
-            await VerificarConquistasDescobertaAsync(usuarioId,totalPresentesEncontrados);
-
-            await VerificarConquistasNivelAsync(usuarioId,usuario?.Nivel ?? 1);
-
+            await VerificarConquistasCheckinAsync(usuarioId, totalCheckins);
+            await VerificarConquistasTrilhasAsync(usuarioId, totalTrilhas);
+            await VerificarConquistasTrilhaCheckinAsync(usuarioId, totalCheckinsTrilha);
+            await VerificarConquistasTrilhaCriacaoAsync(usuarioId, totalTrilhasCriadas);
+            await VerificarConquistasPresentesAsync(usuarioId, totalPresentesCriados);
+            await VerificarConquistasDescobertaAsync(usuarioId, totalPresentesEncontrados);
+            await VerificarConquistasNivelAsync(usuarioId, usuario?.Nivel ?? 1);
             await VerificarConquistasAvaliacaoAsync(usuarioId, totalAvaliacoes);
         }
 
@@ -84,16 +78,40 @@ namespace o_campista.business.imp.Services
             if (totalCheckins >= 100)
                 await ConcederConquistaAsync(usuarioId, (long)ConquistaEnum.LendaDoCamping);
         }
-        private async Task VerificarConquistasTrilhasAsync(Guid usuarioId,int totalTrilhas)
+        private async Task VerificarConquistasTrilhasAsync(Guid usuarioId, int totalTrilhas)
         {
             if (totalTrilhas >= 1)
                 await ConcederConquistaAsync(usuarioId, (long)ConquistaEnum.PrimeiroPasso);
 
             if (totalTrilhas >= 5)
                 await ConcederConquistaAsync(usuarioId, (long)ConquistaEnum.Trilheiro);
+        }
 
-            //if (totalTrilhas >= 20)
-            //    await ConcederConquistaAsync(usuarioId, (long)ConquistaEnum.Aventureiro);
+        private async Task VerificarConquistasTrilhaCheckinAsync(Guid usuarioId, int totalCheckinsTrilha)
+        {
+            if (totalCheckinsTrilha >= 1)
+                await ConcederConquistaAsync(usuarioId, (long)ConquistaEnum.PrimeiroPassoNaTrilha);
+
+            if (totalCheckinsTrilha >= 5)
+                await ConcederConquistaAsync(usuarioId, (long)ConquistaEnum.TrilheiroAssiduo);
+
+            if (totalCheckinsTrilha >= 20)
+                await ConcederConquistaAsync(usuarioId, (long)ConquistaEnum.ExploradorDeTrilhas);
+
+            if (totalCheckinsTrilha >= 50)
+                await ConcederConquistaAsync(usuarioId, (long)ConquistaEnum.MestreDasTrilhas);
+        }
+
+        private async Task VerificarConquistasTrilhaCriacaoAsync(Guid usuarioId, int totalTrilhasCriadas)
+        {
+            if (totalTrilhasCriadas >= 1)
+                await ConcederConquistaAsync(usuarioId, (long)ConquistaEnum.CriadorDeTrilhas);
+
+            if (totalTrilhasCriadas >= 5)
+                await ConcederConquistaAsync(usuarioId, (long)ConquistaEnum.ArquitetoDaTrilha);
+
+            if (totalTrilhasCriadas >= 20)
+                await ConcederConquistaAsync(usuarioId, (long)ConquistaEnum.LendaDasTrilhas);
         }
         private async Task VerificarConquistasPresentesAsync(Guid usuarioId,int totalPresentes)
         {
