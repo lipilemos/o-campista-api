@@ -7,6 +7,7 @@ namespace o_campista.repository.IRepositories
         Task CriarAsync(CampingAvaliacao avaliacao);
         Task<CampingAvaliacao?> ObterPorIdAsync(long id);
         Task<CampingAvaliacao?> ObterPorCheckinAsync(long checkinId);
+        Task<CampingAvaliacao?> ObterPorCheckinETrilhaAsync(long checkinId, long trilhaId);
         Task<List<CampingAvaliacao>> ObterPorCampingAsync(long campingId);
         Task<List<CampingAvaliacao>> ObterPorCampingEUsuarioAsync(long campingId, Guid usuarioId, long? checkinId = null);
         Task<List<CampingAvaliacao>> ObterTodosAsync();

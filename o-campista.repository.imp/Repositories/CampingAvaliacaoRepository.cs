@@ -36,6 +36,13 @@ namespace o_campista.repository.imp.Repositories
                 .FirstOrDefaultAsync(x => x.CheckinId == checkinId);
         }
 
+        public async Task<CampingAvaliacao?> ObterPorCheckinETrilhaAsync(long checkinId, long trilhaId)
+        {
+            return await _context.Set<CampingAvaliacao>()
+                .Include(x => x.Usuario)
+                .FirstOrDefaultAsync(x => x.CheckinId == checkinId && x.TrilhaId == trilhaId);
+        }
+
         public async Task<List<CampingAvaliacao>> ObterPorCampingAsync(long campingId)
         {
             return await _context.Set<CampingAvaliacao>()
