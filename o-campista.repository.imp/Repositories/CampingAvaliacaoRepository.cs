@@ -88,5 +88,23 @@ namespace o_campista.repository.imp.Repositories
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task<List<CampingAvaliacao>> ObterPorTrilhaAsync(long trilhaId)
+        {
+            return await _context.Set<CampingAvaliacao>()
+                .Where(x => x.TrilhaId == trilhaId)
+                .Include(x => x.Usuario)
+                .OrderByDescending(x => x.CriadoEm)
+                .ToListAsync();
+        }
+
+        public async Task<double> ObterMediaNotasPorTrilhaAsync(long trilhaId)
+        {
+            var avaliacoes = await _context.Set<CampingAvaliacao>()
+                .Where(x => x.TrilhaId == trilhaId)
+                .ToListAsync();
+
+            return avaliacoes.Count > 0 ? avaliacoes.Average(a => a.Nota) : 0;
+        }
     }
 }

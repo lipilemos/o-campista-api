@@ -12,7 +12,10 @@ namespace o_campista.entities.Entities
         public long Id { get; set; }
 
         [Column("camping_id")]
-        public long CampingId { get; set; }
+        public long? CampingId { get; set; }
+
+        [Column("trilha_id")]
+        public long? TrilhaId { get; set; }
 
         [Column("usuario_id")]
         public Guid UsuarioId { get; set; }
@@ -28,11 +31,17 @@ namespace o_campista.entities.Entities
         [MaxLength(1000)]
         public string Comentario { get; set; } = string.Empty;
 
+        [Column("foto_url")]
+        public string? FotoUrl { get; set; }
+
         [Column("criado_em")]
         public DateTime CriadoEm { get; set; }
 
         [ForeignKey(nameof(CampingId))]
-        public virtual Camping Camping { get; set; } = null!;
+        public virtual Camping? Camping { get; set; }
+
+        [ForeignKey(nameof(TrilhaId))]
+        public virtual Trilha? Trilha { get; set; }
 
         [ForeignKey(nameof(UsuarioId))]
         public virtual Usuario Usuario { get; set; } = null!;

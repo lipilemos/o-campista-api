@@ -8,5 +8,7 @@ namespace o_campista.business.IServices
         Task RealizarCheckinAsync(CheckinRequest request);
         Task<List<HistoricoCheckinResponse>> ObtenerHistoricoAsync(Guid usuarioId);
         Task<int> ContarPessoasUltimas24hAsync(long campingId);
+        Task RealizarCheckinTrilhaAsync(long trilhaId, Guid usuarioId, decimal latitude, decimal longitude);
+        Task<int> ContarPessoasTrilhaUltimas24hAsync(long trilhaId);
     }
 }

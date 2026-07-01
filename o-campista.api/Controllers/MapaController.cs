@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using o_campista.api.Services;
 using o_campista.business.IServices;
+using o_campista.repository.IRepositories;
 using o_campista.shared.Models.Responses;
 
 namespace o_campista.api.Controllers;
@@ -11,11 +12,13 @@ public class MapaController : ControllerBase
 {
     private readonly IMapaService _mapaService;
     private readonly ICampingAvaliacaoService _avaliacaoService;
+    private readonly ICampingFotoRepository _campingFotoRepository;
 
-    public MapaController(IMapaService mapaService, ICampingAvaliacaoService avaliacaoService)
+    public MapaController(IMapaService mapaService, ICampingAvaliacaoService avaliacaoService, ICampingFotoRepository campingFotoRepository)
     {
         _mapaService = mapaService;
         _avaliacaoService = avaliacaoService;
+        _campingFotoRepository = campingFotoRepository;
     }
 
     [HttpGet("campings")]
@@ -64,6 +67,22 @@ public class MapaController : ControllerBase
         {
             return BadRequest(new { mensagem = ex.Message });
         }
+    }
+
+    [HttpGet("camping/{campingId}/fotos")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> ObterFotosCamping(long campingId)
+    {
+        var fotos = await _campingFotoRepository.ObterPorCampingAsync(campingId);
+        var response = fotos.Select(f => new CampingFotoResponse
+        {
+            Id = f.Id,
+            Url = f.Url,
+            Principal = f.Principal,
+            Ordem = f.Ordem,
+            CriadoEm = f.CriadoEm
+        });
+        return Ok(response);
     }
 }
 

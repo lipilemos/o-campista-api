@@ -51,7 +51,8 @@ public class CheckinRepository : ICheckinRepository
         return await _context.Set<Checkin>()
             .Where(x => x.UsuarioId == usuarioId)
             .Include(x => x.Camping)
-            .ThenInclude(x=>x.Fotos)
+            .ThenInclude(x => x.Fotos)
+            .Include(x => x.Trilha)
             .OrderByDescending(x => x.CriadoEm)
             .ToListAsync();
     }
@@ -71,6 +72,26 @@ public class CheckinRepository : ICheckinRepository
         var limite = DateTime.UtcNow.AddHours(-24);
         return await _context.Checkins
             .Where(c => c.CampingId == campingId && c.CriadoEm >= limite)
+            .Select(c => c.UsuarioId)
+            .Distinct()
+            .CountAsync();
+    }
+
+    public async Task<bool> JaExisteTrilhaHojeAsync(Guid usuarioId, long trilhaId)
+    {
+        var hoje = DateTime.UtcNow.Date;
+        return await _context.Checkins
+            .AnyAsync(x =>
+                x.UsuarioId == usuarioId &&
+                x.TrilhaId == trilhaId &&
+                x.CriadoEm.Date == hoje);
+    }
+
+    public async Task<int> ContarCheckinsUltimas24hTrilhaAsync(long trilhaId)
+    {
+        var limite = DateTime.UtcNow.AddHours(-24);
+        return await _context.Checkins
+            .Where(c => c.TrilhaId == trilhaId && c.CriadoEm >= limite)
             .Select(c => c.UsuarioId)
             .Distinct()
             .CountAsync();

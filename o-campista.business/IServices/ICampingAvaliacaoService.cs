@@ -11,5 +11,7 @@ namespace o_campista.business.IServices
         Task<List<CampingAvaliacaoComUsuarioResponse>> ObterAvaliacoesPorUsuarioAsync(long campingId, Guid usuarioId, long? checkinId = null);
         Task AtualizarAvaliacaoAsync(long id, CampingAvaliacaoRequest request);
         Task DeletarAvaliacaoAsync(long id);
+        Task<CampingAvaliacaoResponse> CriarAvaliacaoTrilhaAsync(TrilhaAvaliacaoRequest request);
+        Task<List<CampingAvaliacaoComUsuarioResponse>> ObterAvaliacoesTrilhaAsync(long trilhaId);
     }
 }

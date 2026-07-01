@@ -19,7 +19,7 @@ namespace o_campista.api.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<IActionResult> CriarAvaliacao([FromBody] CampingAvaliacaoRequest request)
+        public async Task<IActionResult> CriarAvaliacao([FromForm] CampingAvaliacaoRequest request)
         {
             try
             {

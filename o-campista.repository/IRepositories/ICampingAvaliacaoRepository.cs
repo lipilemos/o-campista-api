@@ -13,5 +13,7 @@ namespace o_campista.repository.IRepositories
         Task<int> ContarPorUsuarioAsync(Guid usuarioId);
         Task AtualizarAsync(CampingAvaliacao avaliacao);
         Task DeletarAsync(long id);
+        Task<List<CampingAvaliacao>> ObterPorTrilhaAsync(long trilhaId);
+        Task<double> ObterMediaNotasPorTrilhaAsync(long trilhaId);
     }
 }

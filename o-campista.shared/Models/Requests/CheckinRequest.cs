@@ -8,7 +8,9 @@ namespace o_campista.shared.Models.Requests
     {
         public Guid UsuarioId { get; set; }
 
-        public long CampingId { get; set; }
+        public long? CampingId { get; set; }
+
+        public long? TrilhaId { get; set; }
 
         public decimal Latitude { get; set; }
 

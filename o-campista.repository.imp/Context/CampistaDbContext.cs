@@ -49,7 +49,32 @@ namespace o_campista.api.Context
             modelBuilder.Entity<Checkin>()
                 .HasOne(x => x.Camping)
                 .WithMany()
-                .HasForeignKey(x => x.CampingId);
+                .HasForeignKey(x => x.CampingId)
+                .IsRequired(false);
+
+            modelBuilder.Entity<Checkin>()
+                .HasOne(x => x.Trilha)
+                .WithMany()
+                .HasForeignKey(x => x.TrilhaId)
+                .IsRequired(false);
+
+            modelBuilder.Entity<Trilha>()
+                .HasOne(t => t.Camping)
+                .WithMany(c => c.Trilhas)
+                .HasForeignKey(t => t.CampingId)
+                .IsRequired(false);
+
+            modelBuilder.Entity<CampingAvaliacao>()
+                .HasOne(a => a.Camping)
+                .WithMany(c => c.Avaliacoes)
+                .HasForeignKey(a => a.CampingId)
+                .IsRequired(false);
+
+            modelBuilder.Entity<CampingAvaliacao>()
+                .HasOne(a => a.Trilha)
+                .WithMany()
+                .HasForeignKey(a => a.TrilhaId)
+                .IsRequired(false);
 
             modelBuilder.Entity<MensagemChat>()
                 .HasOne(m => m.Usuario)
@@ -131,6 +156,7 @@ namespace o_campista.api.Context
         public DbSet<UsuarioPresente> UsuarioPresentes { get; set; }
         public DbSet<UsuarioTrilha> UsuarioTrilhas{ get; set; }
         public DbSet<Checkin> Checkins { get; set; }
+        public DbSet<CampingAvaliacao> CampingAvaliacoes { get; set; }
         public DbSet<MensagemChat> MensagensChat { get; set; }
         public DbSet<SalaChat> SalasChat { get; set; }
         public DbSet<SalaChatMembro> SalaChatMembros { get; set; }

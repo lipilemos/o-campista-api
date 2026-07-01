@@ -13,5 +13,7 @@ namespace o_campista.shared.Enums
         BucketCamping =2,
         [Description("BucketUser")]
         BucketUser = 3,
+        [Description("BucketAvaliacao")]
+        BucketAvaliacao = 4,
     }
 }

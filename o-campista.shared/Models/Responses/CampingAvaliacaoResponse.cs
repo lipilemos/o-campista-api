@@ -7,6 +7,7 @@ namespace o_campista.shared.Models.Responses
         public long CampingId { get; set; }
         public int Nota { get; set; }
         public string Comentario { get; set; } = string.Empty;
+        public string? FotoUrl { get; set; }
         public DateTime DataCriacao { get; set; }
         public long CheckinId { get; set; }
     }
