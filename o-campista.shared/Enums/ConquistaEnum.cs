@@ -37,17 +37,6 @@ namespace o_campista.shared.Enums
         CriticoIniciante = 20,
         CriticoExperiente = 21,
         Avaliador = 22,
-        MestreDasCriticas = 23,
-
-        // Check-ins em trilhas
-        PrimeiroPassoNaTrilha = 24,
-        TrilheiroAssiduo = 25,
-        ExploradorDeTrilhas = 26,
-        MestreDasTrilhas = 27,
-
-        // Criação de trilhas
-        CriadorDeTrilhas = 28,
-        ArquitetoDaTrilha = 29,
-        LendaDasTrilhas = 30
+        MestreDasCriticas = 23
     }
 }

@@ -5,7 +5,6 @@ namespace o_campista.repository.IRepositories
     public interface ITrilhaRepository
     {
         Task<int> ContarConcluidasPorUsuarioAsync(Guid usuarioId);
-        Task<int> ContarCriadasPorUsuarioAsync(Guid usuarioId);
         Task<IEnumerable<Trilha>> ObterPorCampingAsync(long campingId);
         Task<Trilha?> ObterPorIdComPontosAsync(long trilhaId);
         Task<Trilha> CriarAsync(Trilha trilha);

@@ -96,10 +96,4 @@ public class CheckinRepository : ICheckinRepository
             .Distinct()
             .CountAsync();
     }
-
-    public async Task<int> ContarCheckinsTrilhaPorUsuarioAsync(Guid usuarioId)
-    {
-        return await _context.Checkins
-            .CountAsync(x => x.UsuarioId == usuarioId && x.TrilhaId != null);
-    }
 }

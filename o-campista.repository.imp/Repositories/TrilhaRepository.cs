@@ -20,12 +20,6 @@ namespace o_campista.repository.imp.Repositories
                 .CountAsync(x => x.UsuarioId == usuarioId && x.Concluida);
         }
 
-        public async Task<int> ContarCriadasPorUsuarioAsync(Guid usuarioId)
-        {
-            return await _context.Trilhas
-                .CountAsync(t => t.CriadorId == usuarioId);
-        }
-
         public async Task<IEnumerable<Trilha>> ObterPorCampingAsync(long campingId)
         {
             return await _context.Trilhas
