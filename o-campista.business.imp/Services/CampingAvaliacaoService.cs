@@ -231,7 +231,7 @@ namespace o_campista.business.imp.Services
             if (string.IsNullOrWhiteSpace(request.Comentario))
                 throw new ArgumentException("O comentário é obrigatório.");
 
-            var avaliacaoExistente = await _avaliacaoRepository.ObterPorCheckinAsync(request.CheckinId);
+            var avaliacaoExistente = await _avaliacaoRepository.ObterPorCheckinETrilhaAsync(request.CheckinId, request.TrilhaId);
             if (avaliacaoExistente != null)
                 throw new Exception("Já existe uma avaliação para este check-in.");
 
@@ -281,6 +281,7 @@ namespace o_campista.business.imp.Services
                 Id = a.Id,
                 UsuarioId = a.UsuarioId,
                 CampingId = 0,
+                CheckinId = a.CheckinId,
                 Nota = a.Nota,
                 Comentario = a.Comentario,
                 FotoUrl = a.FotoUrl,
