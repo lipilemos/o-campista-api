@@ -2,6 +2,7 @@ using Microsoft.Extensions.Logging;
 using o_campista.business.IServices;
 using o_campista.entities.Entities;
 using o_campista.repository.IRepositories;
+using o_campista.shared.Enums;
 using o_campista.shared.Models.Requests;
 using o_campista.shared.Models.Responses;
 
@@ -14,6 +15,7 @@ namespace o_campista.business.imp.Services
         private readonly ICheckinRepository _checkinRepository;
         private readonly IUsuarioService _usuarioService;
         private readonly IConquistaService _conquistaService;
+        private readonly IStorageService _storageService;
         private readonly ILogger<CampingAvaliacaoService> _logger;
 
         public CampingAvaliacaoService(
@@ -22,6 +24,7 @@ namespace o_campista.business.imp.Services
             ICheckinRepository checkinRepository,
             IUsuarioService usuarioService,
             IConquistaService conquistaService,
+            IStorageService storageService,
             ILogger<CampingAvaliacaoService> logger)
         {
             _avaliacaoRepository = avaliacaoRepository;
@@ -29,6 +32,7 @@ namespace o_campista.business.imp.Services
             _checkinRepository = checkinRepository;
             _usuarioService = usuarioService;
             _conquistaService = conquistaService;
+            _storageService = storageService;
             _logger = logger;
         }
 
@@ -61,6 +65,12 @@ namespace o_campista.business.imp.Services
                 throw new Exception("Camping não encontrado.");
             }
 
+            string? fotoUrl = null;
+            if (request.Foto != null)
+            {
+                fotoUrl = await _storageService.UploadAsync(request.Foto, BucketTypeEnum.BucketAvaliacao);
+            }
+
             var avaliacao = new CampingAvaliacao
             {
                 CampingId = request.CampingId,
@@ -68,6 +78,7 @@ namespace o_campista.business.imp.Services
                 CheckinId = request.CheckinId,
                 Nota = request.Nota,
                 Comentario = request.Comentario,
+                FotoUrl = fotoUrl,
                 CriadoEm = DateTime.UtcNow
             };
 
@@ -86,9 +97,10 @@ namespace o_campista.business.imp.Services
             {
                 Id = avaliacao.Id,
                 UsuarioId = avaliacao.UsuarioId,
-                CampingId = avaliacao.CampingId,
+                CampingId = avaliacao.CampingId ?? 0,
                 Nota = avaliacao.Nota,
                 Comentario = avaliacao.Comentario,
+                FotoUrl = avaliacao.FotoUrl,
                 DataCriacao = avaliacao.CriadoEm,
             };
         }
@@ -103,9 +115,10 @@ namespace o_campista.business.imp.Services
             {
                 Id = avaliacao.Id,
                 UsuarioId = avaliacao.UsuarioId,
-                CampingId = avaliacao.CampingId,
+                CampingId = avaliacao.CampingId ?? 0,
                 Nota = avaliacao.Nota,
                 Comentario = avaliacao.Comentario,
+                FotoUrl = avaliacao.FotoUrl,
                 DataCriacao = avaliacao.CriadoEm,
             };
         }
@@ -120,9 +133,10 @@ namespace o_campista.business.imp.Services
             {
                 Id = a.Id,
                 UsuarioId = a.UsuarioId,
-                CampingId = a.CampingId,
+                CampingId = a.CampingId ?? 0,
                 Nota = a.Nota,
                 Comentario = a.Comentario,
+                FotoUrl = a.FotoUrl,
                 DataCriacao = a.CriadoEm,
                 UsuarioNome = a.Usuario.Nome,
                 UsuarioFoto = string.Empty
@@ -143,9 +157,10 @@ namespace o_campista.business.imp.Services
             {
                 Id = a.Id,
                 UsuarioId = a.UsuarioId,
-                CampingId = a.CampingId,
+                CampingId = a.CampingId ?? 0,
                 Nota = a.Nota,
                 Comentario = a.Comentario,
+                FotoUrl = a.FotoUrl,
                 CheckinId = a.CheckinId,
                 DataCriacao = a.CriadoEm,
                 UsuarioNome = a.Usuario.Nome,
@@ -179,9 +194,9 @@ namespace o_campista.business.imp.Services
 
             await _avaliacaoRepository.AtualizarAsync(avaliacao);
 
-            if (notaAnterior != request.Nota)
+            if (notaAnterior != request.Nota && avaliacao.CampingId.HasValue)
             {
-                await AtualizarMediaCampingAsync(avaliacao.CampingId);
+                await AtualizarMediaCampingAsync(avaliacao.CampingId.Value);
             }
 
             _logger.LogInformation("Avaliação atualizada com sucesso. AvaliacaoId={AvaliacaoId}", id);
@@ -200,9 +215,79 @@ namespace o_campista.business.imp.Services
             var campingId = avaliacao.CampingId;
             await _avaliacaoRepository.DeletarAsync(id);
 
-            await AtualizarMediaCampingAsync(campingId);
+            if (campingId.HasValue)
+                await AtualizarMediaCampingAsync(campingId.Value);
 
             _logger.LogInformation("Avaliação deletada com sucesso. AvaliacaoId={AvaliacaoId}", id);
+        }
+
+        public async Task<CampingAvaliacaoResponse> CriarAvaliacaoTrilhaAsync(TrilhaAvaliacaoRequest request)
+        {
+            _logger.LogInformation("Criando avaliação de trilha. Usuario={UsuarioId} Trilha={TrilhaId}", request.UsuarioId, request.TrilhaId);
+
+            if (request.Nota < 1 || request.Nota > 5)
+                throw new ArgumentException("A nota deve estar entre 1 e 5.");
+
+            if (string.IsNullOrWhiteSpace(request.Comentario))
+                throw new ArgumentException("O comentário é obrigatório.");
+
+            var avaliacaoExistente = await _avaliacaoRepository.ObterPorCheckinAsync(request.CheckinId);
+            if (avaliacaoExistente != null)
+                throw new Exception("Já existe uma avaliação para este check-in.");
+
+            string? fotoUrl = null;
+            if (request.Foto != null)
+                fotoUrl = await _storageService.UploadAsync(request.Foto, BucketTypeEnum.BucketAvaliacao);
+
+            var avaliacao = new CampingAvaliacao
+            {
+                TrilhaId = request.TrilhaId,
+                UsuarioId = request.UsuarioId,
+                CheckinId = request.CheckinId,
+                Nota = request.Nota,
+                Comentario = request.Comentario,
+                FotoUrl = fotoUrl,
+                CriadoEm = DateTime.UtcNow
+            };
+
+            await _avaliacaoRepository.CriarAsync(avaliacao);
+            await _usuarioService.AdicionarXPAsync(request.UsuarioId, request.XpGanho);
+            await _conquistaService.VerificarConquistasAsync(request.UsuarioId);
+
+            var mediaAtual = await _avaliacaoRepository.ObterMediaNotasPorTrilhaAsync(request.TrilhaId);
+            // Update trail media via repository directly (no ITrilhaRepository injected here, so done in controller flow)
+            _ = mediaAtual; // media available if needed
+
+            _logger.LogInformation("Avaliação de trilha criada. Avaliacao={AvaliacaoId}", avaliacao.Id);
+
+            return new CampingAvaliacaoResponse
+            {
+                Id = avaliacao.Id,
+                UsuarioId = avaliacao.UsuarioId,
+                CampingId = 0,
+                Nota = avaliacao.Nota,
+                Comentario = avaliacao.Comentario,
+                FotoUrl = avaliacao.FotoUrl,
+                DataCriacao = avaliacao.CriadoEm,
+            };
+        }
+
+        public async Task<List<CampingAvaliacaoComUsuarioResponse>> ObterAvaliacoesTrilhaAsync(long trilhaId)
+        {
+            var avaliacoes = await _avaliacaoRepository.ObterPorTrilhaAsync(trilhaId);
+
+            return avaliacoes.Select(a => new CampingAvaliacaoComUsuarioResponse
+            {
+                Id = a.Id,
+                UsuarioId = a.UsuarioId,
+                CampingId = 0,
+                Nota = a.Nota,
+                Comentario = a.Comentario,
+                FotoUrl = a.FotoUrl,
+                DataCriacao = a.CriadoEm,
+                UsuarioNome = a.Usuario.Nome,
+                UsuarioFoto = string.Empty
+            }).ToList();
         }
 
         private async Task AtualizarMediaCampingAsync(long campingId)

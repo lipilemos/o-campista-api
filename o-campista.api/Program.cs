@@ -52,6 +52,7 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 //services
+builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddHttpClient<StorageService>();
 builder.Services.AddScoped<IMapaService, MapaService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
@@ -64,8 +65,10 @@ builder.Services.AddScoped<ICampingAvaliacaoService, CampingAvaliacaoService>();
 builder.Services.AddScoped<IChatService, ChatService>();
 builder.Services.AddScoped<ISalaChatService, SalaChatService>();
 builder.Services.AddScoped<IUsuarioTrilhaService, UsuarioTrilhaService>();
+builder.Services.AddScoped<ITrilhaService, TrilhaService>();
 
 //repositories
+builder.Services.AddScoped<ICampingFotoRepository, CampingFotoRepository>();
 builder.Services.AddScoped<IUsuarioConquistaRepository, UsuarioConquistaRepository>();
 builder.Services.AddScoped<ITrilhaRepository, TrilhaRepository>();
 builder.Services.AddScoped<IUsuarioPresenteRepository, UsuarioPresenteRepository>();

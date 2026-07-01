@@ -5,6 +5,8 @@ namespace o_campista.shared.Models.Responses
         public long Id { get; set; }
         public Guid UsuarioId { get; set; }
         public long CampingId { get; set; }
+        public long? TrilhaId { get; set; }
+        public string? TrilhaNome { get; set; }
         public CampingInfoResponse Camping { get; set; } = null!;
         public DateTime DataCriacao { get; set; }
         public decimal Latitude { get; set; }

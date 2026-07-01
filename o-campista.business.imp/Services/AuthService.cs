@@ -14,13 +14,16 @@ namespace o_campista.business.imp.Services
     {
         private readonly IUsuarioRepository _usuarioRepository;
         private readonly IConfiguration _configuration;
+        private readonly IEmailService _emailService;
 
         public AuthService(
             IUsuarioRepository usuarioRepository,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IEmailService emailService)
         {
             _usuarioRepository = usuarioRepository;
             _configuration = configuration;
+            _emailService = emailService;
         }
 
         public async Task<LoginResponse> LoginAsync(
@@ -144,10 +147,7 @@ namespace o_campista.business.imp.Services
                 new TokenService()
                     .GenerateResetToken(usuario.Email);
 
-            // TODO: Enviar email com link de recuperação contendo o token
-            // Por enquanto, o token é logado no console para desenvolvimento
-            Console.WriteLine(
-                $"[RESET PASSWORD] Token para {usuario.Email}: {token}");
+            await _emailService.SendPasswordResetEmailAsync(usuario.Email, token);
         }
 
         public async Task ResetPasswordAsync(

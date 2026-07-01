@@ -15,7 +15,11 @@ namespace o_campista.entities.Entities
         [Column("usuario_id")]
         public Guid UsuarioId { get; set; }
         [Column("camping_id")]
-        public long CampingId { get; set; }
+        public long? CampingId { get; set; }
+
+        [Column("trilha_id")]
+        public long? TrilhaId { get; set; }
+
         [Column("latitude")]
         public decimal Latitude { get; set; }
         [Column("longitude")]
@@ -25,6 +29,7 @@ namespace o_campista.entities.Entities
         [Column("criado_em")]
         public DateTime CriadoEm { get; set; }
         public Usuario Usuario { get; set; } = null!;
-        public Camping Camping { get; set; } = null!;
+        public Camping? Camping { get; set; }
+        public Trilha? Trilha { get; set; }
     }
 }
