@@ -1,4 +1,5 @@
 ﻿using o_campista.entities.Entities;
+using o_campista.shared.Models.Responses;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -19,5 +20,6 @@ namespace o_campista.repository.IRepositories
         Task<int> ContarCheckinsTrilhaPorUsuarioAsync(Guid usuarioId);
         Task<int> ContarTotalCheckinsCampingAsync(long campingId);
         Task<int> ContarTotalCheckinsTrilhaAsync(long trilhaId);
+        Task<Dictionary<long, StatusOcupacaoResponse>> ObterStatusOcupacaoTodosAsync();
     }
 }

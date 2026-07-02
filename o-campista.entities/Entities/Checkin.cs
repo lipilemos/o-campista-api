@@ -26,6 +26,10 @@ namespace o_campista.entities.Entities
         public decimal Longitude { get; set; }
         [Column("xp_ganho")]
         public int XpGanho { get; set; }
+        [Column("ocupacao")]
+        [MaxLength(20)]
+        public string? Ocupacao { get; set; }
+
         [Column("criado_em")]
         public DateTime CriadoEm { get; set; }
         public Usuario Usuario { get; set; } = null!;

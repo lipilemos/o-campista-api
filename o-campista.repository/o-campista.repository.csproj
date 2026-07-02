@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\o-campista.entities\o-campista.entities.csproj" />
+    <ProjectReference Include="..\o-campista.shared\o-campista.shared.csproj" />
   </ItemGroup>
 
 </Project>

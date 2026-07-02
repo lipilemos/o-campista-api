@@ -15,5 +15,7 @@ namespace o_campista.shared.Models.Requests
         public decimal Latitude { get; set; }
 
         public decimal Longitude { get; set; }
+
+        public string? Ocupacao { get; set; }
     }
 }
