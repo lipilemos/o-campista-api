@@ -15,4 +15,5 @@ public class CampingMapaResponse
     public string FotoPrincipal { get; set; } = string.Empty;
     public string Tipo { get; set; } = string.Empty;
     public List<RecursoCampingResponse> Recursos { get; set; } = [];
+    public StatusOcupacaoResponse? StatusOcupacao { get; set; }
 }

@@ -2,6 +2,7 @@
 using o_campista.api.Context;
 using o_campista.entities.Entities;
 using o_campista.repository.IRepositories;
+using o_campista.shared.Models.Responses;
 
 namespace o_campista.repository.imp.Repositories;
 
@@ -118,5 +119,36 @@ public class CheckinRepository : ICheckinRepository
             .Where(c => c.TrilhaId == trilhaId)
             .Select(c => c.UsuarioId)
             .CountAsync();
+    }
+
+    public async Task<Dictionary<long, StatusOcupacaoResponse>> ObterStatusOcupacaoTodosAsync()
+    {
+        var limite = DateTime.UtcNow.AddHours(-6);
+
+        var contagens = await _context.Checkins
+            .Where(c => c.CampingId != null && c.Ocupacao != null && c.CriadoEm >= limite)
+            .GroupBy(c => new { c.CampingId, c.Ocupacao })
+            .Select(g => new
+            {
+                CampingId = g.Key.CampingId!.Value,
+                Nivel = g.Key.Ocupacao!,
+                Contagem = g.Count(),
+                AtualizadoEm = g.Max(c => c.CriadoEm)
+            })
+            .ToListAsync();
+
+        return contagens
+            .GroupBy(x => x.CampingId)
+            .ToDictionary(
+                g => g.Key,
+                g =>
+                {
+                    var moda = g.OrderByDescending(x => x.Contagem).First();
+                    return new StatusOcupacaoResponse
+                    {
+                        Nivel = moda.Nivel,
+                        AtualizadoEm = moda.AtualizadoEm
+                    };
+                });
     }
 }

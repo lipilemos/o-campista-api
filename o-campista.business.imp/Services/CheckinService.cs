@@ -62,6 +62,7 @@ namespace o_campista.business.imp.Services
                 CampingId = request.CampingId,
                 Latitude = request.Latitude,
                 Longitude = request.Longitude,
+                Ocupacao = request.Ocupacao,
                 XpGanho = 100,
                 CriadoEm = DateTime.UtcNow
             };
