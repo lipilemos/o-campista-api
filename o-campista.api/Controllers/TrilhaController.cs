@@ -97,6 +97,20 @@ namespace o_campista.api.Controllers
             }
         }
 
+        [HttpGet("{trilhaId}/checkins/total")]
+        public async Task<IActionResult> ContarTotalVisitas(long trilhaId)
+        {
+            try
+            {
+                var total = await _checkinService.ContarTotalVisitasTrilhaAsync(trilhaId);
+                return Ok(new { total });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensagem = ex.Message });
+            }
+        }
+
         [HttpGet("{trilhaId}/checkins/recentes")]
         public async Task<IActionResult> ContarCheckinsRecentes(long trilhaId)
         {

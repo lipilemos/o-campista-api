@@ -144,5 +144,15 @@ namespace o_campista.business.imp.Services
         {
             return await _checkinRepository.ContarCheckinsUltimas24hAsync(campingId);
         }
+
+        public async Task<int> ContarTotalVisitasCampingAsync(long campingId)
+        {
+            return await _checkinRepository.ContarTotalCheckinsCampingAsync(campingId);
+        }
+
+        public async Task<int> ContarTotalVisitasTrilhaAsync(long trilhaId)
+        {
+            return await _checkinRepository.ContarTotalCheckinsTrilhaAsync(trilhaId);
+        }
     }
 }

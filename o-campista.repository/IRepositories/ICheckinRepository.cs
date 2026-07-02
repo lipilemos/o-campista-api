@@ -17,5 +17,7 @@ namespace o_campista.repository.IRepositories
         Task<bool> JaExisteTrilhaHojeAsync(Guid usuarioId, long trilhaId);
         Task<int> ContarCheckinsUltimas24hTrilhaAsync(long trilhaId);
         Task<int> ContarCheckinsTrilhaPorUsuarioAsync(Guid usuarioId);
+        Task<int> ContarTotalCheckinsCampingAsync(long campingId);
+        Task<int> ContarTotalCheckinsTrilhaAsync(long trilhaId);
     }
 }
