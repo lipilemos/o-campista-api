@@ -20,13 +20,8 @@ public class MapaService : IMapaService
     public async Task<IEnumerable<CampingMapaResponse>>
         ObterCampingsMapaAsync(string? busca = null, string? tipo = null, string[]? recursos = null)
     {
-        var campingsTask = _campingRepository.ObterCampingsMapaAsync(busca, tipo, recursos);
-        var statusOcupacaoTask = _checkinRepository.ObterStatusOcupacaoTodosAsync();
-
-        await Task.WhenAll(campingsTask, statusOcupacaoTask);
-
-        var campings = await campingsTask;
-        var statusOcupacao = await statusOcupacaoTask;
+        var campings = await _campingRepository.ObterCampingsMapaAsync(busca, tipo, recursos);
+        var statusOcupacao = await _checkinRepository.ObterStatusOcupacaoTodosAsync();
 
         return campings.Select(c => new CampingMapaResponse
         {
