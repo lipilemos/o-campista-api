@@ -4,6 +4,7 @@ using o_campista.entities.Entities;
 using o_campista.repository.IRepositories;
 
 namespace o_campista.repository.imp.Repositories;
+
 public class CheckinRepository : ICheckinRepository
 {
     private readonly CampistaDbContext _context;
@@ -33,7 +34,7 @@ public class CheckinRepository : ICheckinRepository
                 x.CriadoEm.Date == hoje);
     }
 
-    public async Task<int>ObterQuantidadeCheckinsUsuarioAsync(Guid usuarioId)
+    public async Task<int> ObterQuantidadeCheckinsUsuarioAsync(Guid usuarioId)
     {
         return await _context.Set<Checkin>()
             .CountAsync(x =>
@@ -101,5 +102,21 @@ public class CheckinRepository : ICheckinRepository
     {
         return await _context.Checkins
             .CountAsync(x => x.UsuarioId == usuarioId && x.TrilhaId != null);
+    }
+
+    public async Task<int> ContarTotalCheckinsCampingAsync(long campingId)
+    {
+        return await _context.Checkins
+            .Where(c => c.CampingId == campingId)
+            .Select(c => c.UsuarioId)
+            .CountAsync();
+    }
+
+    public async Task<int> ContarTotalCheckinsTrilhaAsync(long trilhaId)
+    {
+        return await _context.Checkins
+            .Where(c => c.TrilhaId == trilhaId)
+            .Select(c => c.UsuarioId)
+            .CountAsync();
     }
 }
