@@ -16,4 +16,5 @@ public interface ISocialRepository
     Task<ConfiguracaoPrivacidade?> ObterPrivacidadeAsync(Guid usuarioId);
     Task SalvarPrivacidadeAsync(ConfiguracaoPrivacidade config);
     Task<List<Usuario>> ObterSugestoesAsync(Guid usuarioId, int limite = 10);
+    Task<List<Usuario>> ObterSeguidoresMutuosAsync(Guid usuarioId);
 }

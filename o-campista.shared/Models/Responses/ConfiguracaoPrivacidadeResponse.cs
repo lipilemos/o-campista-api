@@ -6,4 +6,5 @@ public class ConfiguracaoPrivacidadeResponse
     public bool CheckinsPublicos { get; set; }
     public bool ConquistasPublicas { get; set; }
     public bool NivelPublico { get; set; }
+    public bool VisivelNoMapa { get; set; }
 }

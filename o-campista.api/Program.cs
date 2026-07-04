@@ -115,7 +115,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 var accessToken = context.Request.Query["access_token"];
                 if (!string.IsNullOrEmpty(accessToken) &&
                     (context.HttpContext.Request.Path.StartsWithSegments("/chatHub") ||
-                     context.HttpContext.Request.Path.StartsWithSegments("/notificationHub")))
+                     context.HttpContext.Request.Path.StartsWithSegments("/notificationHub") ||
+                     context.HttpContext.Request.Path.StartsWithSegments("/locationHub")))
                 {
                     context.Token = accessToken;
                 }
@@ -158,4 +159,5 @@ app.UseAuthorization();
 app.MapControllers();
 app.MapHub<ChatHub>("/chatHub");
 app.MapHub<ChatNotificationHub>("/notificationHub");
+app.MapHub<LocationHub>("/locationHub");
 app.Run();

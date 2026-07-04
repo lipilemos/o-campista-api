@@ -24,4 +24,7 @@ public class ConfiguracaoPrivacidade
 
     [Column("nivel_publico")]
     public bool NivelPublico { get; set; } = true;
+
+    [Column("visivel_no_mapa")]
+    public bool VisivelNoMapa { get; set; } = false;
 }

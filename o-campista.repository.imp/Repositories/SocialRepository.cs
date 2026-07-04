@@ -100,6 +100,7 @@ public class SocialRepository : ISocialRepository
             existente.CheckinsPublicos = config.CheckinsPublicos;
             existente.ConquistasPublicas = config.ConquistasPublicas;
             existente.NivelPublico = config.NivelPublico;
+            existente.VisivelNoMapa = config.VisivelNoMapa;
         }
 
         await _context.SaveChangesAsync();
@@ -148,6 +149,16 @@ public class SocialRepository : ISocialRepository
         return await _context.Usuarios
             .Where(u => sugestaoIds.Contains(u.Id) && u.Ativo)
             .Take(limite)
+            .ToListAsync();
+    }
+
+    public async Task<List<Usuario>> ObterSeguidoresMutuosAsync(Guid usuarioId)
+    {
+        // Usuários que me seguem E que eu também sigo
+        return await _context.Seguidores
+            .Where(s => s.SeguidoId == usuarioId &&
+                        _context.Seguidores.Any(f => f.SeguidorId == usuarioId && f.SeguidoId == s.SeguidorId))
+            .Select(s => s.SeguidorUsuario)
             .ToListAsync();
     }
 }

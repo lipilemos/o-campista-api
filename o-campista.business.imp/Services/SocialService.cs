@@ -187,7 +187,8 @@ public class SocialService : ISocialService
             PerfilPublico = config?.PerfilPublico ?? true,
             CheckinsPublicos = config?.CheckinsPublicos ?? true,
             ConquistasPublicas = config?.ConquistasPublicas ?? true,
-            NivelPublico = config?.NivelPublico ?? true
+            NivelPublico = config?.NivelPublico ?? true,
+            VisivelNoMapa = config?.VisivelNoMapa ?? false
         };
     }
 
@@ -199,7 +200,8 @@ public class SocialService : ISocialService
             PerfilPublico = request.PerfilPublico,
             CheckinsPublicos = request.CheckinsPublicos,
             ConquistasPublicas = request.ConquistasPublicas,
-            NivelPublico = request.NivelPublico
+            NivelPublico = request.NivelPublico,
+            VisivelNoMapa = request.VisivelNoMapa
         });
 
         _logger.LogInformation("Privacidade atualizada para usuário {UsuarioId}", usuarioId);
