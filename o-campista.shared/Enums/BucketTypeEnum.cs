@@ -15,5 +15,7 @@ namespace o_campista.shared.Enums
         BucketUser = 3,
         [Description("BucketAvaliacao")]
         BucketAvaliacao = 4,
+        [Description("BucketPost")]
+        BucketPost = 5,
     }
 }

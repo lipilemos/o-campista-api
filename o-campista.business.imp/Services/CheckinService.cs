@@ -16,6 +16,7 @@ namespace o_campista.business.imp.Services
         private readonly IUsuarioService _usuarioService;
         private readonly IConquistaService _conquistaService;
         private readonly ISalaChatService _salaChatService;
+        private readonly IFeedService _feedService;
         private readonly ILogger<CheckinService> _logger;
 
         public CheckinService(
@@ -26,6 +27,7 @@ namespace o_campista.business.imp.Services
             IUsuarioService usuarioService,
             IConquistaService conquistaService,
             ISalaChatService salaChatService,
+            IFeedService feedService,
             ILogger<CheckinService> logger)
         {
             _checkinRepository = checkinRepository;
@@ -35,6 +37,7 @@ namespace o_campista.business.imp.Services
             _usuarioService = usuarioService;
             _conquistaService = conquistaService;
             _salaChatService = salaChatService;
+            _feedService = feedService;
             _logger = logger;
         }
 
@@ -71,6 +74,7 @@ namespace o_campista.business.imp.Services
             await _usuarioService.AdicionarXPAsync(request.UsuarioId, 100);
             await _conquistaService.VerificarConquistasAsync(request.UsuarioId);
             await _salaChatService.CriarSalaCampingSeNaoExisteAsync(request.CampingId.Value, request.UsuarioId);
+            await _feedService.CriarAtividadeAsync(request.UsuarioId, "checkin", checkin.Id);
 
             _logger.LogInformation(
                 "Check-in realizado com sucesso. Usuario={UsuarioId} Camping={CampingId}",
@@ -103,6 +107,7 @@ namespace o_campista.business.imp.Services
             await _checkinRepository.CriarAsync(checkin);
             await _usuarioService.AdicionarXPAsync(usuarioId, 100);
             await _conquistaService.VerificarConquistasAsync(usuarioId);
+            await _feedService.CriarAtividadeAsync(usuarioId, "checkin", checkin.Id);
 
             _logger.LogInformation("Check-in na trilha realizado com sucesso. Usuario={UsuarioId} Trilha={TrilhaId}", usuarioId, trilhaId);
         }

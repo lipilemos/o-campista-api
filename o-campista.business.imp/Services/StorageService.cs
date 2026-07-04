@@ -55,6 +55,7 @@ namespace o_campista.business.imp.Services
                 }
 
                 var uploadUrl = $"{bucketUrl}/storage/v1/object/{bucket}/{nomeArquivo}";
+                var publicUrl = $"{bucketUrl}/storage/v1/object/public/{bucket}/{nomeArquivo}";
 
                 _logger.LogInformation(
                     "Realizando upload para {UploadUrl}",
@@ -147,7 +148,7 @@ namespace o_campista.business.imp.Services
                     "Upload concluído com sucesso. Arquivo: {NomeArquivo}",
                     nomeArquivo);
 
-                return uploadUrl;
+                return publicUrl;
             }
             catch (Exception ex)
             {

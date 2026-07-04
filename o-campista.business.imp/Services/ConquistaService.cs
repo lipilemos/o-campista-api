@@ -18,6 +18,7 @@ namespace o_campista.business.imp.Services
         private readonly IUsuarioConquistaRepository _usuarioConquistaRepository;
         private readonly IUsuarioRepository _usuarioRepository;
         private readonly ICampingAvaliacaoRepository _avaliacaoRepository;
+        private readonly IFeedService _feedService;
         private readonly ILogger<ConquistaService> _logger;
 
         public ConquistaService(
@@ -28,6 +29,7 @@ namespace o_campista.business.imp.Services
             IUsuarioConquistaRepository usuarioConquistaRepository,
             IUsuarioRepository usuarioRepository,
             ICampingAvaliacaoRepository avaliacaoRepository,
+            IFeedService feedService,
             ILogger<ConquistaService> logger)
         {
             _checkinRepository = checkinRepository;
@@ -37,6 +39,7 @@ namespace o_campista.business.imp.Services
             _usuarioConquistaRepository = usuarioConquistaRepository;
             _usuarioRepository = usuarioRepository;
             _avaliacaoRepository = avaliacaoRepository;
+            _feedService = feedService;
             _logger = logger;
         }
 
@@ -183,6 +186,8 @@ namespace o_campista.business.imp.Services
 
             await _usuarioConquistaRepository
                 .CriarAsync(conquista);
+
+            await _feedService.CriarAtividadeAsync(usuarioId, "conquista", conquistaId);
 
             _logger.LogInformation(
                 "Conquista liberada. Usuario={UsuarioId} Conquista={ConquistaId}",

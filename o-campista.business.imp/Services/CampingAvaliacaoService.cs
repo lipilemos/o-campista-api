@@ -16,6 +16,7 @@ namespace o_campista.business.imp.Services
         private readonly IUsuarioService _usuarioService;
         private readonly IConquistaService _conquistaService;
         private readonly IStorageService _storageService;
+        private readonly IFeedService _feedService;
         private readonly ILogger<CampingAvaliacaoService> _logger;
 
         public CampingAvaliacaoService(
@@ -25,6 +26,7 @@ namespace o_campista.business.imp.Services
             IUsuarioService usuarioService,
             IConquistaService conquistaService,
             IStorageService storageService,
+            IFeedService feedService,
             ILogger<CampingAvaliacaoService> logger)
         {
             _avaliacaoRepository = avaliacaoRepository;
@@ -33,6 +35,7 @@ namespace o_campista.business.imp.Services
             _usuarioService = usuarioService;
             _conquistaService = conquistaService;
             _storageService = storageService;
+            _feedService = feedService;
             _logger = logger;
         }
 
@@ -86,6 +89,7 @@ namespace o_campista.business.imp.Services
 
             await _usuarioService.AdicionarXPAsync(request.UsuarioId, request.XpGanho);
             await _conquistaService.VerificarConquistasAsync(request.UsuarioId);
+            await _feedService.CriarAtividadeAsync(request.UsuarioId, "avaliacao", avaliacao.Id);
 
             await AtualizarMediaCampingAsync(request.CampingId);
 
@@ -253,6 +257,7 @@ namespace o_campista.business.imp.Services
             await _avaliacaoRepository.CriarAsync(avaliacao);
             await _usuarioService.AdicionarXPAsync(request.UsuarioId, request.XpGanho);
             await _conquistaService.VerificarConquistasAsync(request.UsuarioId);
+            await _feedService.CriarAtividadeAsync(request.UsuarioId, "avaliacao", avaliacao.Id);
 
             var mediaAtual = await _avaliacaoRepository.ObterMediaNotasPorTrilhaAsync(request.TrilhaId);
             // Update trail media via repository directly (no ITrilhaRepository injected here, so done in controller flow)

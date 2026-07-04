@@ -29,4 +29,7 @@ public class Usuario
     public virtual ICollection<UsuarioTrilha> UsuarioTrilhas { get; set; } = [];
     public virtual ICollection<Checkin> Checkins { get; set; } = [];
     public virtual ICollection<CampingAvaliacao> Avaliacoes { get; set; } = [];
+    public virtual ICollection<Seguidor> Seguidores { get; set; } = [];
+    public virtual ICollection<Seguidor> Seguindo { get; set; } = [];
+    public virtual ConfiguracaoPrivacidade? Privacidade { get; set; }
 }
