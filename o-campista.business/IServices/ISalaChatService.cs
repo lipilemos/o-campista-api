@@ -18,5 +18,6 @@ namespace o_campista.business.IServices
         Task<MensagemSalaChatResponse> SalvarMensagemAsync(long salaId, Guid usuarioId, string texto);
         Task<SalaChat> CriarSalaCampingSeNaoExisteAsync(long campingId, Guid usuarioId);
         Task SairDoGrupoAsync(long salaId, Guid usuarioId);
+        Task<SalaChatResponse> ObterOuCriarDmAsync(Guid solicitanteId, Guid destinatarioId);
     }
 }

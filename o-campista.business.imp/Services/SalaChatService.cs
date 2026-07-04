@@ -12,17 +12,23 @@ namespace o_campista.business.imp.Services
         private readonly IMensagemSalaChatRepository _mensagemRepository;
         private readonly ICheckinRepository _checkinRepository;
         private readonly ICampingRepository _campingRepository;
+        private readonly ISocialRepository _socialRepository;
+        private readonly IUsuarioRepository _usuarioRepository;
 
         public SalaChatService(
             ISalaChatRepository salaRepository,
             IMensagemSalaChatRepository mensagemRepository,
             ICheckinRepository checkinRepository,
-            ICampingRepository campingRepository)
+            ICampingRepository campingRepository,
+            ISocialRepository socialRepository,
+            IUsuarioRepository usuarioRepository)
         {
             _salaRepository = salaRepository;
             _mensagemRepository = mensagemRepository;
             _checkinRepository = checkinRepository;
             _campingRepository = campingRepository;
+            _socialRepository = socialRepository;
+            _usuarioRepository = usuarioRepository;
         }
 
         public async Task<List<SalaChatResponse>> ObterSalasAsync(Guid usuarioId)
@@ -40,17 +46,28 @@ namespace o_campista.business.imp.Services
 
                 var ultimaMensagem = sala.Mensagens.FirstOrDefault();
 
+                var outroMembro = sala.Tipo == "dm"
+                    ? sala.Membros.FirstOrDefault(m => m.UsuarioId != usuarioId)
+                    : null;
+
                 responses.Add(new SalaChatResponse
                 {
                     Id = sala.Id,
-                    Nome = sala.Tipo == "camping" && sala.Camping is not null ? sala.Camping.Nome : sala.Nome,
+                    Nome = sala.Tipo == "camping" && sala.Camping is not null
+                        ? sala.Camping.Nome
+                        : sala.Tipo == "dm" && outroMembro is not null
+                            ? outroMembro.Usuario.Nome
+                            : sala.Nome,
                     Tipo = sala.Tipo,
                     CampingId = sala.CampingId,
-                    FotoCapa = sala.FotoCapa,
-                    CodigoConvite = sala.CodigoConvite,
+                    FotoCapa = sala.Tipo == "dm" && outroMembro is not null
+                        ? outroMembro.Usuario.FotoPerfil
+                        : sala.FotoCapa,
+                    CodigoConvite = sala.Tipo == "dm" ? null : sala.CodigoConvite,
                     DataCriacao = sala.CriadoEm,
                     TotalNaoLidas = naoLidas.TryGetValue(sala.Id, out var count) ? count : 0,
                     PodeEnviar = podeEnviar,
+                    OutroUsuarioId = outroMembro?.UsuarioId,
                     UltimaMensagem = ultimaMensagem is not null ? new UltimaMensagemResponse
                     {
                         Texto = ultimaMensagem.Texto,
@@ -200,7 +217,7 @@ namespace o_campista.business.imp.Services
             if (sala is null)
                 throw new Exception("Sala não encontrada.");
 
-            if (sala.Tipo == "grupo")
+            if (sala.Tipo is "grupo" or "dm")
                 return new PodeEnviarResponse { PodeEnviar = true };
 
             if (!sala.CampingId.HasValue)
@@ -290,6 +307,72 @@ namespace o_campista.business.imp.Services
                 throw new Exception("Você não é membro deste grupo.");
 
             await _salaRepository.RemoverMembroAsync(salaId, usuarioId);
+        }
+
+        public async Task<SalaChatResponse> ObterOuCriarDmAsync(Guid solicitanteId, Guid destinatarioId)
+        {
+            if (solicitanteId == destinatarioId)
+                throw new ArgumentException("Não é possível iniciar uma conversa consigo mesmo.");
+
+            var segueMutuo = await _socialRepository.SegueMutuamenteAsync(solicitanteId, destinatarioId);
+            if (!segueMutuo)
+                throw new UnauthorizedAccessException("Você só pode trocar mensagens com seguidores mútuos.");
+
+            var salaExistente = await _salaRepository.ObterDmEntreUsuariosAsync(solicitanteId, destinatarioId);
+            if (salaExistente is not null)
+            {
+                var outroMembroExistente = salaExistente.Membros?.FirstOrDefault(m => m.UsuarioId != solicitanteId);
+                return new SalaChatResponse
+                {
+                    Id = salaExistente.Id,
+                    Nome = outroMembroExistente?.Usuario.Nome ?? string.Empty,
+                    Tipo = "dm",
+                    FotoCapa = outroMembroExistente?.Usuario.FotoPerfil,
+                    DataCriacao = salaExistente.CriadoEm,
+                    PodeEnviar = true,
+                    OutroUsuarioId = destinatarioId
+                };
+            }
+
+            var destinatario = await _usuarioRepository.ObterPorIdAsync(destinatarioId);
+            if (destinatario is null || !destinatario.Ativo)
+                throw new Exception("Usuário não encontrado.");
+
+            var sala = new SalaChat
+            {
+                Nome = string.Empty,
+                Tipo = "dm",
+                CodigoConvite = GerarCodigoConvite(),
+                CriadoPorId = solicitanteId,
+                CriadoEm = DateTime.UtcNow
+            };
+
+            sala = await _salaRepository.CriarAsync(sala);
+
+            await _salaRepository.AdicionarMembroAsync(new SalaChatMembro
+            {
+                SalaId = sala.Id,
+                UsuarioId = solicitanteId,
+                EntradaEm = DateTime.UtcNow
+            });
+
+            await _salaRepository.AdicionarMembroAsync(new SalaChatMembro
+            {
+                SalaId = sala.Id,
+                UsuarioId = destinatarioId,
+                EntradaEm = DateTime.UtcNow
+            });
+
+            return new SalaChatResponse
+            {
+                Id = sala.Id,
+                Nome = destinatario.Nome,
+                Tipo = "dm",
+                FotoCapa = destinatario.FotoPerfil,
+                DataCriacao = sala.CriadoEm,
+                PodeEnviar = true,
+                OutroUsuarioId = destinatarioId
+            };
         }
 
         private static string GerarCodigoConvite()

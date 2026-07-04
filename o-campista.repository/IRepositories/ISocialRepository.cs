@@ -5,6 +5,7 @@ namespace o_campista.repository.IRepositories;
 public interface ISocialRepository
 {
     Task<bool> EstaSeguidoAsync(Guid seguidorId, Guid seguidoId);
+    Task<bool> SegueMutuamenteAsync(Guid usuarioAId, Guid usuarioBId);
     Task SegueAsync(Seguidor seguidor);
     Task PararDeSegueAsync(Guid seguidorId, Guid seguidoId);
     Task<List<Usuario>> ObterSeguidoresAsync(Guid usuarioId);

@@ -12,6 +12,7 @@ namespace o_campista.shared.Models.Responses
         public UltimaMensagemResponse? UltimaMensagem { get; set; }
         public int TotalNaoLidas { get; set; }
         public bool PodeEnviar { get; set; }
+        public Guid? OutroUsuarioId { get; set; }
     }
 
     public class UltimaMensagemResponse

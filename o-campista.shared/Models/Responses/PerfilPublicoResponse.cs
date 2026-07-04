@@ -15,4 +15,5 @@ public class PerfilPublicoResponse
     public int TotalSeguidores { get; set; }
     public int TotalSeguindo { get; set; }
     public bool EstouSeguindo { get; set; }
+    public bool SegueMutuo { get; set; }
 }

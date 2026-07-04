@@ -19,6 +19,8 @@ namespace o_campista.repository.imp.Repositories
             return await _context.SalasChat
                 .Where(s => s.Membros.Any(m => m.UsuarioId == usuarioId))
                 .Include(s => s.Camping)
+                .Include(s => s.Membros)
+                    .ThenInclude(m => m.Usuario)
                 .Include(s => s.Mensagens.OrderByDescending(m => m.DataEnvio).Take(1))
                     .ThenInclude(m => m.Usuario)
                 .OrderByDescending(s => s.Mensagens.Max(m => (DateTime?)m.DataEnvio) ?? s.CriadoEm)
@@ -81,6 +83,19 @@ namespace o_campista.repository.imp.Repositories
                 _context.SalaChatMembros.Remove(membro);
                 await _context.SaveChangesAsync();
             }
+        }
+
+        public async Task<SalaChat?> ObterDmEntreUsuariosAsync(Guid usuarioAId, Guid usuarioBId)
+        {
+            return await _context.SalasChat
+                .Where(s => s.Tipo == "dm"
+                    && s.Membros.Any(m => m.UsuarioId == usuarioAId)
+                    && s.Membros.Any(m => m.UsuarioId == usuarioBId))
+                .Include(s => s.Membros)
+                    .ThenInclude(m => m.Usuario)
+                .Include(s => s.Mensagens.OrderByDescending(m => m.DataEnvio).Take(1))
+                    .ThenInclude(m => m.Usuario)
+                .FirstOrDefaultAsync();
         }
     }
 }

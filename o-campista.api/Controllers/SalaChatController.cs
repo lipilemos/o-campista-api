@@ -195,6 +195,30 @@ namespace o_campista.api.Controllers
             }
         }
 
+        [HttpPost("diretas/{usuarioId:guid}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> ObterOuCriarDm(Guid usuarioId)
+        {
+            try
+            {
+                var usuario = await ObterUsuarioAutenticado();
+                if (usuario is null) return Unauthorized();
+
+                var sala = await _salaChatService.ObterOuCriarDmAsync(usuario.Id, usuarioId);
+                return Ok(sala);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return StatusCode(StatusCodes.Status403Forbidden, new { mensagem = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensagem = ex.Message });
+            }
+        }
+
         [HttpGet("nao-lidas")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]

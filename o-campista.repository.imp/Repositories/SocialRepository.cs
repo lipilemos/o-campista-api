@@ -20,6 +20,13 @@ public class SocialRepository : ISocialRepository
             .AnyAsync(s => s.SeguidorId == seguidorId && s.SeguidoId == seguidoId);
     }
 
+    public async Task<bool> SegueMutuamenteAsync(Guid usuarioAId, Guid usuarioBId)
+    {
+        var aSegueB = await EstaSeguidoAsync(usuarioAId, usuarioBId);
+        if (!aSegueB) return false;
+        return await EstaSeguidoAsync(usuarioBId, usuarioAId);
+    }
+
     public async Task SegueAsync(Seguidor seguidor)
     {
         await _context.Seguidores.AddAsync(seguidor);

@@ -39,6 +39,8 @@ public class SocialService : ISocialService
         var totalSeguindo = await _socialRepository.ContarSeguindoAsync(perfilId);
         var estouSeguindo = requisitanteId.HasValue
             && await _socialRepository.EstaSeguidoAsync(requisitanteId.Value, perfilId);
+        var segueMutuo = requisitanteId.HasValue
+            && await _socialRepository.SegueMutuamenteAsync(requisitanteId.Value, perfilId);
 
         var nivelPublico = privacidade?.NivelPublico ?? true;
         var checkinsPublicos = privacidade?.CheckinsPublicos ?? true;
@@ -101,7 +103,8 @@ public class SocialService : ISocialService
                 : null,
             TotalSeguidores = totalSeguidores,
             TotalSeguindo = totalSeguindo,
-            EstouSeguindo = estouSeguindo
+            EstouSeguindo = estouSeguindo,
+            SegueMutuo = segueMutuo
         };
     }
 

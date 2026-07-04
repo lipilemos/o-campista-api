@@ -13,5 +13,6 @@ namespace o_campista.repository.IRepositories
         Task<List<SalaChatMembro>> ObterMembrosAsync(long salaId);
         Task<bool> UsuarioEhMembroAsync(long salaId, Guid usuarioId);
         Task RemoverMembroAsync(long salaId, Guid usuarioId);
+        Task<SalaChat?> ObterDmEntreUsuariosAsync(Guid usuarioAId, Guid usuarioBId);
     }
 }
