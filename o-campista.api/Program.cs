@@ -66,6 +66,13 @@ builder.Services.AddScoped<IChatService, ChatService>();
 builder.Services.AddScoped<ISalaChatService, SalaChatService>();
 builder.Services.AddScoped<IUsuarioTrilhaService, UsuarioTrilhaService>();
 builder.Services.AddScoped<ITrilhaService, TrilhaService>();
+builder.Services.AddScoped<ISocialService, SocialService>();
+builder.Services.AddScoped<IFeedService, FeedService>();
+builder.Services.AddScoped<IPostService, PostService>();
+builder.Services.AddScoped<IComentarioPostService, ComentarioPostService>();
+builder.Services.AddScoped<IRankingService, RankingService>();
+builder.Services.AddScoped<INotificacaoService, NotificacaoService>();
+builder.Services.AddScoped<IFavoritoCampingService, FavoritoCampingService>();
 
 //repositories
 builder.Services.AddScoped<ICampingFotoRepository, CampingFotoRepository>();
@@ -81,6 +88,13 @@ builder.Services.AddScoped<IMensagemChatRepository, MensagemChatRepository>();
 builder.Services.AddScoped<ISalaChatRepository, SalaChatRepository>();
 builder.Services.AddScoped<IMensagemSalaChatRepository, MensagemSalaChatRepository>();
 builder.Services.AddScoped<IUsuarioTrilhaRepository, UsuarioTrilhaRepository>();
+builder.Services.AddScoped<ISocialRepository, SocialRepository>();
+builder.Services.AddScoped<IFeedRepository, FeedRepository>();
+builder.Services.AddScoped<IPostRepository, PostRepository>();
+builder.Services.AddScoped<IComentarioPostRepository, ComentarioPostRepository>();
+builder.Services.AddScoped<IRankingRepository, RankingRepository>();
+builder.Services.AddScoped<INotificacaoRepository, NotificacaoRepository>();
+builder.Services.AddScoped<IFavoritoCampingRepository, FavoritoCampingRepository>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

@@ -141,6 +141,125 @@ namespace o_campista.api.Context
                 .HasFilter("codigo_convite IS NOT NULL")
                 .HasDatabaseName("IX_SalaChat_CodigoConvite");
 
+            modelBuilder.Entity<Seguidor>()
+                .HasKey(s => new { s.SeguidorId, s.SeguidoId });
+
+            modelBuilder.Entity<Seguidor>()
+                .HasOne(s => s.SeguidorUsuario)
+                .WithMany(u => u.Seguindo)
+                .HasForeignKey(s => s.SeguidorId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Seguidor>()
+                .HasOne(s => s.SeguidoUsuario)
+                .WithMany(u => u.Seguidores)
+                .HasForeignKey(s => s.SeguidoId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ConfiguracaoPrivacidade>()
+                .HasOne(c => c.Usuario)
+                .WithOne(u => u.Privacidade)
+                .HasForeignKey<ConfiguracaoPrivacidade>(c => c.UsuarioId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<CurtidaPost>()
+                .HasKey(c => new { c.PostId, c.UsuarioId });
+
+            modelBuilder.Entity<CurtidaPost>()
+                .HasOne(c => c.Post)
+                .WithMany(p => p.Curtidas)
+                .HasForeignKey(c => c.PostId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<CurtidaPost>()
+                .HasOne(c => c.Usuario)
+                .WithMany()
+                .HasForeignKey(c => c.UsuarioId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ComentarioPost>()
+                .HasOne(c => c.Post)
+                .WithMany(p => p.Comentarios)
+                .HasForeignKey(c => c.PostId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ComentarioPost>()
+                .HasOne(c => c.Usuario)
+                .WithMany()
+                .HasForeignKey(c => c.UsuarioId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ComentarioPost>()
+                .HasIndex(c => new { c.PostId, c.CriadoEm })
+                .HasDatabaseName("IX_ComentariosPost_PostId_CriadoEm");
+
+            modelBuilder.Entity<PostViagem>()
+                .HasOne(p => p.Usuario)
+                .WithMany()
+                .HasForeignKey(p => p.UsuarioId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<PostViagem>()
+                .HasOne(p => p.Camping)
+                .WithMany()
+                .HasForeignKey(p => p.CampingId)
+                .IsRequired(false);
+
+            modelBuilder.Entity<PostViagem>()
+                .HasOne(p => p.Trilha)
+                .WithMany()
+                .HasForeignKey(p => p.TrilhaId)
+                .IsRequired(false);
+
+            modelBuilder.Entity<AtividadeFeed>()
+                .HasOne(a => a.Usuario)
+                .WithMany()
+                .HasForeignKey(a => a.UsuarioId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<AtividadeFeed>()
+                .HasIndex(a => new { a.UsuarioId, a.CriadoEm })
+                .HasDatabaseName("IX_AtividadeFeed_UsuarioId_CriadoEm");
+
+            modelBuilder.Entity<AtividadeFeed>()
+                .HasIndex(a => a.CriadoEm)
+                .HasDatabaseName("IX_AtividadeFeed_CriadoEm");
+
+            modelBuilder.Entity<Notificacao>()
+                .HasOne(n => n.Destinatario)
+                .WithMany()
+                .HasForeignKey(n => n.DestinatarioId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Notificacao>()
+                .HasOne(n => n.Remetente)
+                .WithMany()
+                .HasForeignKey(n => n.RemetenteId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Notificacao>()
+                .HasIndex(n => new { n.DestinatarioId, n.CriadoEm })
+                .HasDatabaseName("IX_Notificacao_DestinatarioId_CriadoEm");
+
+            modelBuilder.Entity<Notificacao>()
+                .HasIndex(n => new { n.DestinatarioId, n.Lida })
+                .HasDatabaseName("IX_Notificacao_DestinatarioId_Lida");
+
+            modelBuilder.Entity<UsuarioCampingFavorito>()
+                .HasKey(f => new { f.UsuarioId, f.CampingId });
+
+            modelBuilder.Entity<UsuarioCampingFavorito>()
+                .HasOne(f => f.Usuario)
+                .WithMany()
+                .HasForeignKey(f => f.UsuarioId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<UsuarioCampingFavorito>()
+                .HasOne(f => f.Camping)
+                .WithMany()
+                .HasForeignKey(f => f.CampingId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             base.OnModelCreating(modelBuilder);
         }
         public DbSet<Usuario> Usuarios { get; set; }
@@ -161,5 +280,13 @@ namespace o_campista.api.Context
         public DbSet<SalaChat> SalasChat { get; set; }
         public DbSet<SalaChatMembro> SalaChatMembros { get; set; }
         public DbSet<MensagemSalaChat> MensagensSalaChat { get; set; }
+        public DbSet<Seguidor> Seguidores { get; set; }
+        public DbSet<ConfiguracaoPrivacidade> ConfiguracaoPrivacidades { get; set; }
+        public DbSet<PostViagem> PostsViagem { get; set; }
+        public DbSet<CurtidaPost> CurtidasPost { get; set; }
+        public DbSet<ComentarioPost> ComentariosPost { get; set; }
+        public DbSet<AtividadeFeed> AtividadesFeed { get; set; }
+        public DbSet<Notificacao> Notificacoes { get; set; }
+        public DbSet<UsuarioCampingFavorito> UsuarioCampingFavoritos { get; set; }
     }
 }
