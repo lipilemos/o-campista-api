@@ -71,9 +71,7 @@ namespace o_campista.business.imp.Services
                         .Distinct()
                         .Count(),
 
-                TotalTrilhasConcluidas =
-                    usuario.UsuarioTrilhas
-                        .Count(x => x.Concluida),
+                TotalTrilhasConcluidas = usuario.UsuarioTrilhas.Count(),
 
                 Conquistas =
                     usuario.UsuarioConquistas

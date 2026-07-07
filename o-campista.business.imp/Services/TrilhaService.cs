@@ -92,10 +92,23 @@ namespace o_campista.business.imp.Services
 
             var criada = await _trilhaRepository.CriarAsync(trilha);
 
+            var registroExistente = await _usuarioTrilhaRepository.ObterAsync(request.CriadorId, criada.Id);
+            if (registroExistente is null)
+            {
+                await _usuarioTrilhaRepository.CriarAsync(new UsuarioTrilha
+                {
+                    UsuarioId = request.CriadorId,
+                    TrilhaId = criada.Id,
+                    Concluida = true,
+                    CriadoEm = DateTime.UtcNow,
+                    ConcluidaEm = DateTime.UtcNow
+                });
+            }
+
             await _usuarioService.AdicionarXPAsync(request.CriadorId, 500);
             await _conquistaService.VerificarConquistasAsync(request.CriadorId);
 
-            return MapearResponse(criada, false);
+            return MapearResponse(criada, true);
         }
 
         public async Task<IEnumerable<TrilhaResponse>> ObterIndependentesParaMapaAsync()
