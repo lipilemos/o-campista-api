@@ -58,7 +58,7 @@ public class SocialService : ISocialService
                 ? usuario.Checkins.Select(x => x.CampingId).Distinct().Count()
                 : null,
             TotalTrilhasConcluidas = checkinsPublicos
-                ? usuario.UsuarioTrilhas.Count(x => x.Concluida)
+                ? usuario.UsuarioTrilhas.Count()
                 : null,
             Conquistas = conquistasPublicas
                 ? usuario.UsuarioConquistas

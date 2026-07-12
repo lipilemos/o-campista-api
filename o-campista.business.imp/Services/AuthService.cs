@@ -68,7 +68,7 @@ namespace o_campista.business.imp.Services
                 XpProximoNivel = NivelXpDictionary.ObterXpProximoNivel(usuario.Nivel),
                 TotalCheckins = usuario.Checkins.Count,
                 TotalCampingsVisitados = usuario.Checkins.Select(x => x.CampingId).Distinct().Count(),
-                TotalTrilhasConcluidas = usuario.UsuarioTrilhas.Count(x => x.Concluida),
+                TotalTrilhasConcluidas = usuario.UsuarioTrilhas.Count(),
                 Conquistas =
                     usuario.UsuarioConquistas
                         .Select(c => new ConquistaResponse
@@ -204,7 +204,7 @@ namespace o_campista.business.imp.Services
                 XpProximoNivel = NivelXpDictionary.ObterXpProximoNivel(usuario.Nivel),
                 TotalCheckins = usuario.Checkins.Count,
                 TotalCampingsVisitados = usuario.Checkins.Select(x => x.CampingId).Distinct().Count(),
-                TotalTrilhasConcluidas = usuario.UsuarioTrilhas.Count(x => x.Concluida),
+                TotalTrilhasConcluidas = usuario.UsuarioTrilhas.Count(),
                 Conquistas =
                     usuario.UsuarioConquistas
                         .Select(c => new ConquistaResponse
@@ -293,7 +293,7 @@ namespace o_campista.business.imp.Services
                 XpProximoNivel = NivelXpDictionary.ObterXpProximoNivel(usuario.Nivel),
                 TotalCheckins = usuario.Checkins.Count,
                 TotalCampingsVisitados = usuario.Checkins.Select(x => x.CampingId).Distinct().Count(),
-                TotalTrilhasConcluidas = usuario.UsuarioTrilhas.Count(x => x.Concluida),
+                TotalTrilhasConcluidas = usuario.UsuarioTrilhas.Count(),
                 Conquistas =
                     usuario.UsuarioConquistas
                         .Select(c => new ConquistaResponse

@@ -34,6 +34,9 @@ namespace o_campista.repository.imp.Repositories
                 .Include(x => x.Checkins)
                     .ThenInclude(x => x.Camping)
 
+                .Include(x => x.Checkins)
+                    .ThenInclude(x => x.Trilha)
+
                 .Include(x => x.UsuarioTrilhas)
                     .ThenInclude(x => x.Trilha)
 

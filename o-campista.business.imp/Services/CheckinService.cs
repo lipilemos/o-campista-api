@@ -12,6 +12,7 @@ namespace o_campista.business.imp.Services
         private readonly ICheckinRepository _checkinRepository;
         private readonly ICampingRepository _campingRepository;
         private readonly ITrilhaRepository _trilhaRepository;
+        private readonly IUsuarioTrilhaRepository _usuarioTrilhaRepository;
         private readonly IUsuarioRepository _usuarioRepository;
         private readonly IUsuarioService _usuarioService;
         private readonly IConquistaService _conquistaService;
@@ -23,6 +24,7 @@ namespace o_campista.business.imp.Services
             ICheckinRepository checkinRepository,
             ICampingRepository campingRepository,
             ITrilhaRepository trilhaRepository,
+            IUsuarioTrilhaRepository usuarioTrilhaRepository,
             IUsuarioRepository usuarioRepository,
             IUsuarioService usuarioService,
             IConquistaService conquistaService,
@@ -33,6 +35,7 @@ namespace o_campista.business.imp.Services
             _checkinRepository = checkinRepository;
             _campingRepository = campingRepository;
             _trilhaRepository = trilhaRepository;
+            _usuarioTrilhaRepository = usuarioTrilhaRepository;
             _usuarioRepository = usuarioRepository;
             _usuarioService = usuarioService;
             _conquistaService = conquistaService;
@@ -105,6 +108,19 @@ namespace o_campista.business.imp.Services
             };
 
             await _checkinRepository.CriarAsync(checkin);
+
+            var registroExistente = await _usuarioTrilhaRepository.ObterAsync(usuarioId, trilhaId);
+            if (registroExistente is null)
+            {
+                await _usuarioTrilhaRepository.CriarAsync(new UsuarioTrilha
+                {
+                    UsuarioId = usuarioId,
+                    TrilhaId = trilhaId,
+                    Concluida = false,
+                    CriadoEm = DateTime.UtcNow
+                });
+            }
+
             await _usuarioService.AdicionarXPAsync(usuarioId, 100);
             await _conquistaService.VerificarConquistasAsync(usuarioId);
             await _feedService.CriarAtividadeAsync(usuarioId, "checkin", checkin.Id);
