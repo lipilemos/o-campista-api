@@ -37,9 +37,10 @@ namespace o_campista.api.Context
                     x.UsuarioId,
                     x.PresenteId
                 });
+            var isSqlServer = Database.ProviderName == "Microsoft.EntityFrameworkCore.SqlServer";
             modelBuilder.Entity<Presente>()
                 .Property(x => x.Location)
-                .HasColumnType("geography(Point,4326)");
+                .HasColumnType(isSqlServer ? "geography" : "geography(Point,4326)");
             
             modelBuilder.Entity<Checkin>()
                 .HasOne(x => x.Usuario)
