@@ -18,14 +18,29 @@ CultureInfo.DefaultThreadCurrentUICulture = culture;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var databaseProvider = builder.Configuration["Database:Provider"] ?? "Npgsql";
+
 builder.Services.AddDbContext<CampistaDbContext>(options =>
-    options.UseNpgsql(
-        builder.Configuration.GetConnectionString("DefaultConnection"),
-        x => x.UseNetTopologySuite()
-    )
-    .EnableSensitiveDataLogging()
-    .LogTo(Console.WriteLine)
-);
+{
+    if (databaseProvider.Equals("SqlServer", StringComparison.OrdinalIgnoreCase))
+    {
+        options.UseSqlServer(
+            builder.Configuration.GetConnectionString("DefaultConnection"),
+            x => x.UseNetTopologySuite()
+        );
+    }
+    else
+    {
+        options.UseNpgsql(
+            builder.Configuration.GetConnectionString("DefaultConnection"),
+            x => x.UseNetTopologySuite()
+        );
+    }
+
+    options
+        .EnableSensitiveDataLogging()
+        .LogTo(Console.WriteLine);
+});
 
 builder.Services.AddControllers();
 builder.Services.AddSignalR();

@@ -16,6 +16,9 @@ namespace o_campista.business.imp.Services
         private readonly IConfiguration _configuration;
         private readonly IEmailService _emailService;
 
+        private const string MockUsuarioEmail = "usuario.mock@campista.com";
+        private const string MockUsuarioSenha = "MockTeste123";
+
         public AuthService(
             IUsuarioRepository usuarioRepository,
             IConfiguration configuration,
@@ -29,6 +32,11 @@ namespace o_campista.business.imp.Services
         public async Task<LoginResponse> LoginAsync(
             LoginRequest request)
         {
+            if (IsMockLoginRequest(request))
+            {
+                return BuildMockLoginResponse();
+            }
+
             var usuario =
                 await _usuarioRepository
                     .ObterPorEmailAsync(
@@ -89,6 +97,36 @@ namespace o_campista.business.imp.Services
                             CodigoResgate = p.Presente.CodigoResgate,
                             Utilizado = p.Utilizado
                         })
+            };
+        }
+
+        private static bool IsMockLoginRequest(
+            LoginRequest request) =>
+            Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development" &&
+            request.Email == MockUsuarioEmail &&
+            request.Senha == MockUsuarioSenha;
+
+        private static LoginResponse BuildMockLoginResponse()
+        {
+            var token =
+                new TokenService()
+                    .GenerateToken(MockUsuarioEmail);
+
+            return new LoginResponse
+            {
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000001"),
+                Nome = "Usuário Mock",
+                Email = MockUsuarioEmail,
+                FotoPerfil = string.Empty,
+                Token = token,
+                Nivel = 5,
+                Xp = 450,
+                XpProximoNivel = NivelXpDictionary.ObterXpProximoNivel(5),
+                TotalCheckins = 12,
+                TotalCampingsVisitados = 8,
+                TotalTrilhasConcluidas = 3,
+                Conquistas = [],
+                Presentes = []
             };
         }
 

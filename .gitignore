@@ -21,3 +21,5 @@ obj/
 
 # ASP.NET
 appsettings.Development.json
+# Artefato acidental de redirect no Windows
+nul
