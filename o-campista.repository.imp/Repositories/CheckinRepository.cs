@@ -69,6 +69,12 @@ public class CheckinRepository : ICheckinRepository
                 c.CriadoEm >= limite);
     }
 
+    public async Task<bool> JaFezCheckinNoCampingAsync(Guid usuarioId, long campingId)
+    {
+        return await _context.Checkins
+            .AnyAsync(c => c.UsuarioId == usuarioId && c.CampingId == campingId);
+    }
+
     public async Task<int> ContarCheckinsUltimas24hAsync(long campingId)
     {
         var limite = DateTime.UtcNow.AddHours(-24);

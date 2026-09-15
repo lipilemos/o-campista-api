@@ -14,6 +14,7 @@ namespace o_campista.business.imp.Services
         private readonly ICampingRepository _campingRepository;
         private readonly ISocialRepository _socialRepository;
         private readonly IUsuarioRepository _usuarioRepository;
+        private readonly IAchadoPerdidoRepository _achadoPerdidoRepository;
 
         public SalaChatService(
             ISalaChatRepository salaRepository,
@@ -21,7 +22,8 @@ namespace o_campista.business.imp.Services
             ICheckinRepository checkinRepository,
             ICampingRepository campingRepository,
             ISocialRepository socialRepository,
-            IUsuarioRepository usuarioRepository)
+            IUsuarioRepository usuarioRepository,
+            IAchadoPerdidoRepository achadoPerdidoRepository)
         {
             _salaRepository = salaRepository;
             _mensagemRepository = mensagemRepository;
@@ -29,6 +31,7 @@ namespace o_campista.business.imp.Services
             _campingRepository = campingRepository;
             _socialRepository = socialRepository;
             _usuarioRepository = usuarioRepository;
+            _achadoPerdidoRepository = achadoPerdidoRepository;
         }
 
         public async Task<List<SalaChatResponse>> ObterSalasAsync(Guid usuarioId)
@@ -314,8 +317,13 @@ namespace o_campista.business.imp.Services
             if (solicitanteId == destinatarioId)
                 throw new ArgumentException("Não é possível iniciar uma conversa consigo mesmo.");
 
-            var segueMutuo = await _socialRepository.SegueMutuamenteAsync(solicitanteId, destinatarioId);
-            if (!segueMutuo)
+            // Seguidores mútuos sempre podem conversar. Achados e perdidos abre uma segunda porta:
+            // quem perdeu um item precisa falar com quem achou, e eles não se seguem.
+            var podeConversar =
+                await _socialRepository.SegueMutuamenteAsync(solicitanteId, destinatarioId)
+                || await _achadoPerdidoRepository.ExisteVinculoAtivoAsync(solicitanteId, destinatarioId);
+
+            if (!podeConversar)
                 throw new UnauthorizedAccessException("Você só pode trocar mensagens com seguidores mútuos.");
 
             var salaExistente = await _salaRepository.ObterDmEntreUsuariosAsync(solicitanteId, destinatarioId);

@@ -194,6 +194,22 @@ namespace o_campista.api.Context
                 .HasIndex(c => new { c.PostId, c.CriadoEm })
                 .HasDatabaseName("IX_ComentariosPost_PostId_CriadoEm");
 
+            modelBuilder.Entity<AchadoPerdido>()
+                .HasOne(a => a.Usuario)
+                .WithMany()
+                .HasForeignKey(a => a.UsuarioId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<AchadoPerdido>()
+                .HasOne(a => a.Camping)
+                .WithMany()
+                .HasForeignKey(a => a.CampingId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<AchadoPerdido>()
+                .HasIndex(a => new { a.CampingId, a.CriadoEm })
+                .HasDatabaseName("IX_AchadoPerdido_CampingId_CriadoEm");
+
             modelBuilder.Entity<PostViagem>()
                 .HasOne(p => p.Usuario)
                 .WithMany()
@@ -289,5 +305,6 @@ namespace o_campista.api.Context
         public DbSet<AtividadeFeed> AtividadesFeed { get; set; }
         public DbSet<Notificacao> Notificacoes { get; set; }
         public DbSet<UsuarioCampingFavorito> UsuarioCampingFavoritos { get; set; }
+        public DbSet<AchadoPerdido> AchadosPerdidos { get; set; }
     }
 }

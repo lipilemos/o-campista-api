@@ -17,5 +17,7 @@ namespace o_campista.shared.Enums
         BucketAvaliacao = 4,
         [Description("BucketPost")]
         BucketPost = 5,
+        [Description("BucketAchadosPerdidos")]
+        BucketAchadosPerdidos = 6,
     }
 }

@@ -14,6 +14,7 @@ namespace o_campista.repository.IRepositories
         Task<int> ContarPorUsuarioAsync(Guid usuarioId);
         Task<List<Checkin>> ObtenerHistoricoAsync(Guid usuarioId);
         Task<bool> TemCheckinNasUltimas24hAsync(Guid usuarioId, long campingId);
+        Task<bool> JaFezCheckinNoCampingAsync(Guid usuarioId, long campingId);
         Task<int> ContarCheckinsUltimas24hAsync(long campingId);
         Task<bool> JaExisteTrilhaHojeAsync(Guid usuarioId, long trilhaId);
         Task<int> ContarCheckinsUltimas24hTrilhaAsync(long trilhaId);

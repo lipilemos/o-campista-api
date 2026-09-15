@@ -239,3 +239,23 @@ CREATE TABLE tb_mensagem_chat (
 
 CREATE INDEX IX_MensagensChat_CampingId_DataEnvio
     ON tb_mensagem_chat (camping_id, data_envio DESC);
+-- Achados e Perdidos por camping
+CREATE TABLE tb_achado_perdido (
+    id            BIGSERIAL    PRIMARY KEY,
+    camping_id    BIGINT       NOT NULL REFERENCES tb_camping(id) ON DELETE CASCADE,
+    usuario_id    UUID         NOT NULL REFERENCES tb_usuario(id) ON DELETE CASCADE,
+    tipo          VARCHAR(10)  NOT NULL CHECK (tipo IN ('achado', 'perdido')),
+    titulo        VARCHAR(120) NOT NULL,
+    descricao     VARCHAR(500) NULL,
+    foto_url      TEXT         NULL,
+    local_guarda  VARCHAR(120) NULL,
+    resolvido     BOOLEAN      NOT NULL DEFAULT FALSE,
+    resolvido_em  TIMESTAMPTZ  NULL,
+    criado_em     TIMESTAMPTZ  NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IX_AchadoPerdido_CampingId_CriadoEm
+    ON tb_achado_perdido (camping_id, criado_em DESC);
+
+CREATE INDEX IX_AchadoPerdido_UsuarioId
+    ON tb_achado_perdido (usuario_id);
