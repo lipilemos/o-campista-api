@@ -569,3 +569,30 @@ GO
 CREATE INDEX ix_usuario_camping_favorito_usuario_id
     ON tb_usuario_camping_favorito (usuario_id, criado_em DESC);
 GO
+
+CREATE TABLE tb_achado_perdido (
+    id            BIGINT IDENTITY(1,1) PRIMARY KEY,
+    camping_id    BIGINT           NOT NULL,
+    usuario_id    UNIQUEIDENTIFIER NOT NULL,
+    tipo          NVARCHAR(10)     NOT NULL,
+    titulo        NVARCHAR(120)    NOT NULL,
+    descricao     NVARCHAR(500)    NULL,
+    foto_url      NVARCHAR(MAX)    NULL,
+    local_guarda  NVARCHAR(120)    NULL,
+    resolvido     BIT              NOT NULL DEFAULT (0),
+    resolvido_em  DATETIME2(3)     NULL,
+    criado_em     DATETIME2(3)     NOT NULL DEFAULT SYSUTCDATETIME(),
+    CONSTRAINT ck_achado_perdido_tipo CHECK (tipo IN ('achado', 'perdido')),
+    CONSTRAINT fk_achado_perdido_camping
+        FOREIGN KEY (camping_id) REFERENCES tb_camping(id) ON DELETE CASCADE,
+    CONSTRAINT fk_achado_perdido_usuario
+        FOREIGN KEY (usuario_id) REFERENCES tb_usuario(id) ON DELETE CASCADE
+);
+GO
+
+CREATE INDEX IX_AchadoPerdido_CampingId_CriadoEm
+    ON tb_achado_perdido (camping_id, criado_em DESC);
+GO
+
+CREATE INDEX IX_AchadoPerdido_UsuarioId ON tb_achado_perdido (usuario_id);
+GO
