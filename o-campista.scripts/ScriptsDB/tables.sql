@@ -3,7 +3,18 @@ create table tb_recurso (
     nome varchar(100) not null unique
 );
 
-create table tb_campings (
+create table tb_usuario (
+    id uuid primary key default gen_random_uuid(),
+    nome varchar(150) not null,
+    email varchar(200) not null unique,
+    senha_hash text not null,
+    data_criacao timestamp default now(),
+    ativo boolean default true,
+    nivel integer default 1,
+    xp integer default 0
+);
+
+create table tb_camping (
     id bigint generated always as identity primary key,
     nome varchar(200) not null,
     descricao text,
@@ -17,18 +28,9 @@ create table tb_campings (
     avaliacao_media numeric(3,2) default 0,
     ativo boolean not null default true,
     criado_em timestamp not null default current_timestamp,
-    atualizado_em timestamp
-);
-
-create table tb_usuario (
-    id uuid primary key default gen_random_uuid(),
-    nome varchar(150) not null,
-    email varchar(200) not null unique,
-    senha_hash text not null,
-    data_criacao timestamp default now(),
-    ativo boolean default true,
-    nivel integer default 1,
-    xp integer default 0
+    atualizado_em timestamp,
+    dono_usuario_id uuid null references tb_usuario(id),
+    dono_status varchar(20) null check (dono_status in ('pendente', 'aprovado'))
 );
 
 create table tb_camping_recurso (

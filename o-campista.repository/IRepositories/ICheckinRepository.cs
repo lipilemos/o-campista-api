@@ -22,5 +22,8 @@ namespace o_campista.repository.IRepositories
         Task<int> ContarTotalCheckinsCampingAsync(long campingId);
         Task<int> ContarTotalCheckinsTrilhaAsync(long trilhaId);
         Task<Dictionary<long, StatusOcupacaoResponse>> ObterStatusOcupacaoTodosAsync();
+        Task<int> ContarCheckinsPeriodoAsync(long campingId, DateTime desde);
+        Task<int> ContarVisitantesUnicosAsync(long campingId);
+        Task<Dictionary<DateOnly, int>> ObterCheckinsPorDiaAsync(long campingId, DateTime desde);
     }
 }

@@ -105,8 +105,16 @@ CREATE TABLE tb_camping (
     avaliacao_media DECIMAL(3,2)    NOT NULL DEFAULT (0),
     ativo           BIT             NOT NULL DEFAULT (1),
     criado_em       DATETIME2(3)    NOT NULL DEFAULT SYSUTCDATETIME(),
-    atualizado_em   DATETIME2(3)    NULL
+    atualizado_em   DATETIME2(3)    NULL,
+    -- Dono do camping (parceiros): NULL = sem dono; status 'pendente' | 'aprovado'
+    dono_usuario_id UNIQUEIDENTIFIER NULL,
+    dono_status     NVARCHAR(20)    NULL,
+    CONSTRAINT fk_camping_dono_usuario FOREIGN KEY (dono_usuario_id) REFERENCES tb_usuario(id),
+    CONSTRAINT ck_camping_dono_status CHECK (dono_status IN ('pendente', 'aprovado'))
 );
+GO
+
+CREATE INDEX IX_tb_camping_dono_usuario_id ON tb_camping(dono_usuario_id) WHERE dono_usuario_id IS NOT NULL;
 GO
 
 CREATE TABLE tb_camping_recurso (

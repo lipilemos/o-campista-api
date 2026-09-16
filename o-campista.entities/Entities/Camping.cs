@@ -58,6 +58,17 @@ namespace o_campista.entities.Entities
         [Column("atualizado_em")]
         public DateTime? AtualizadoEm { get; set; }
 
+        [Column("dono_usuario_id")]
+        public Guid? DonoUsuarioId { get; set; }
+
+        [Column("dono_status")]
+        [MaxLength(20)]
+        public string? DonoStatus { get; set; }
+
+        public const string DonoStatusPendente = "pendente";
+        public const string DonoStatusAprovado = "aprovado";
+        public static readonly string[] TiposComDono = ["camping", "pesca"];
+
         public virtual ICollection<CampingFoto> Fotos { get; set; } = [];
 
         public virtual ICollection<CampingRecurso> Recursos { get; set; } = [];
