@@ -89,6 +89,7 @@ builder.Services.AddScoped<IAchadoPerdidoService, AchadoPerdidoService>();
 builder.Services.AddScoped<IRankingService, RankingService>();
 builder.Services.AddScoped<INotificacaoService, NotificacaoService>();
 builder.Services.AddScoped<IFavoritoCampingService, FavoritoCampingService>();
+builder.Services.AddScoped<ICampingParceiroService, CampingParceiroService>();
 
 //repositories
 builder.Services.AddScoped<ICampingFotoRepository, CampingFotoRepository>();
@@ -112,6 +113,7 @@ builder.Services.AddScoped<IAchadoPerdidoRepository, AchadoPerdidoRepository>();
 builder.Services.AddScoped<IRankingRepository, RankingRepository>();
 builder.Services.AddScoped<INotificacaoRepository, NotificacaoRepository>();
 builder.Services.AddScoped<IFavoritoCampingRepository, FavoritoCampingRepository>();
+builder.Services.AddScoped<IRecursoRepository, RecursoRepository>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

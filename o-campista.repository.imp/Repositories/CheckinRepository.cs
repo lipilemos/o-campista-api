@@ -157,4 +157,29 @@ public class CheckinRepository : ICheckinRepository
                     };
                 });
     }
+
+    public Task<int> ContarCheckinsPeriodoAsync(long campingId, DateTime desde)
+    {
+        return _context.Checkins.CountAsync(c => c.CampingId == campingId && c.CriadoEm >= desde);
+    }
+
+    public Task<int> ContarVisitantesUnicosAsync(long campingId)
+    {
+        return _context.Checkins
+            .Where(c => c.CampingId == campingId)
+            .Select(c => c.UsuarioId)
+            .Distinct()
+            .CountAsync();
+    }
+
+    public async Task<Dictionary<DateOnly, int>> ObterCheckinsPorDiaAsync(long campingId, DateTime desde)
+    {
+        var porDia = await _context.Checkins
+            .Where(c => c.CampingId == campingId && c.CriadoEm >= desde)
+            .GroupBy(c => c.CriadoEm.Date)
+            .Select(g => new { Dia = g.Key, Quantidade = g.Count() })
+            .ToListAsync();
+
+        return porDia.ToDictionary(x => DateOnly.FromDateTime(x.Dia), x => x.Quantidade);
+    }
 }
